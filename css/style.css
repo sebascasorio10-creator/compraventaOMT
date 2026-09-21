@@ -1,0 +1,515 @@
+/* =========================
+   VARIABLES
+========================= */
+
+:root {
+    --primary: #ffc107;
+    --dark: #111111;
+    --gray: #6c757d;
+    --light: #f8f8f8;
+}
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", Arial, sans-serif;
+    color: #222;
+    background: white;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================
+   NAVBAR (80px ORIGINAL)
+========================= */
+
+.navbar {
+    height: 80px;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+}
+
+.logo-navbar {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    margin-right: 8px;
+}
+
+.brand-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111;
+}
+
+.brand-text span {
+    color: var(--primary);
+}
+
+.nav-link {
+    font-weight: 500;
+    margin: 0 10px;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+.search-box input {
+    border-radius: 30px 0 0 30px;
+    min-width: 230px;
+}
+
+.search-box button {
+    border-radius: 0 30px 30px 0;
+}
+
+.cart-icon {
+    font-size: 24px;
+    color: #222;
+}
+
+/* =========================
+   HERO / CARRUSEL
+========================= */
+
+.hero-section {
+    height: 450px;
+    margin-top: 80px;
+    position: relative;
+    overflow: hidden;
+    background: url('../img/almacen_confianza.jpg') center/cover no-repeat;
+    background-color: #111;
+    transition: background-image 0.5s ease-in-out;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, .75),
+        rgba(0, 0, 0, .25)
+    );
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.hero-card {
+    max-width: 550px;
+    background: rgba(20, 20, 20, .75);
+    backdrop-filter: blur(8px);
+    padding: 45px;
+    border-radius: 20px;
+    color: white;
+}
+
+.hero-card h1 {
+    font-size: 55px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.hero-card p {
+    color: #ddd;
+    font-size: 18px;
+    margin: 25px 0;
+}
+
+.hero-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    font-size: 25px;
+    z-index: 3;
+    cursor: pointer;
+}
+
+.hero-control.left {
+    left: 30px;
+}
+
+.hero-control.right {
+    right: 30px;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+.slider-dots .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    margin: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slider-dots .dot.active {
+    width: 30px;
+    border-radius: 20px;
+    background: var(--primary);
+}
+
+/* =========================
+   ALERTA
+========================= */
+
+.location-alert {
+    padding: 35px 0;
+}
+
+.alert-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    background: #fff8df;
+    border-radius: 15px;
+}
+
+.alert-icon {
+    width: 55px;
+    height: 55px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+}
+
+.alert-box h6 {
+    font-weight: 700;
+}
+
+.alert-box p {
+    margin: 0;
+    color: var(--gray);
+}
+
+.status {
+    margin-left: auto;
+    color: #198754;
+    font-size: 14px;
+}
+
+.status i {
+    font-size: 8px;
+}
+
+/* =========================
+   PRODUCTOS (TARJETAS UNIFORMES)
+========================= */
+
+.products-section {
+    padding: 70px 0;
+    background: #fafafa;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    font-size: 40px;
+    font-weight: 800;
+}
+
+.section-header p {
+    color: var(--gray);
+}
+
+.product-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: .3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, .12);
+}
+
+.product-image {
+    height: 250px;
+    position: relative;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.tag {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.new {
+    background: #198754;
+    color: white;
+}
+
+.sale {
+    background: #dc3545;
+    color: white;
+}
+
+.best {
+    background: #ffc107;
+}
+
+.favorite {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-info {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-info h5 {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.category {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 15px 0 auto 0;
+    color: #111;
+}
+
+/* =========================
+   VENDER
+========================= */
+
+.sell-section {
+    padding: 70px 0;
+}
+
+.sell-box {
+    background: #111;
+    color: white;
+    border-radius: 25px;
+    padding: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sell-content h2 {
+    font-size: 45px;
+    font-weight: 800;
+}
+
+.sell-content p {
+    color: #ccc;
+    margin: 15px 0 25px 0;
+}
+
+.sell-image {
+    font-size: 150px;
+    color: var(--primary);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    background: #111;
+    color: white;
+    padding: 70px 0 30px;
+}
+
+.footer-logo {
+    font-weight: 900;
+}
+
+.footer-logo span {
+    color: var(--primary);
+}
+
+.footer p {
+    color: #aaa;
+}
+
+.footer h5 {
+    margin-bottom: 20px;
+}
+
+.footer ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer li {
+    margin-bottom: 12px;
+    color: #aaa;
+}
+
+.social-icons a {
+    font-size: 22px;
+    margin-right: 15px;
+    color: white;
+}
+
+.social-icons a:hover {
+    color: var(--primary);
+}
+
+.newsletter {
+    display: flex;
+}
+
+.newsletter input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.newsletter button {
+    width: 50px;
+    background: var(--primary);
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 25px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width: 992px) {
+    .hero-card h1 {
+        font-size: 40px;
+    }
+
+    .search-box {
+        margin: 15px 0;
+    }
+
+    .sell-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .sell-image {
+        margin-top: 30px;
+    }
+}
+
+@media(max-width: 576px) {
+    .hero-section {
+        height: 600px;
+    }
+
+    .hero-card {
+        padding: 25px;
+    }
+
+    .hero-card h1 {
+        font-size: 32px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .alert-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .status {
+        margin: auto;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+    }
+}

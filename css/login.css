@@ -1,0 +1,172 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f7f7f7;
+}
+
+/* NAVBAR */
+
+.navbar{
+    background:#fff;
+    height:75px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 80px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.logo{
+    font-size:34px;
+    font-weight:bold;
+}
+
+.negro{
+    color:#111;
+}
+
+.amarillo{
+    color:#f8b400;
+}
+
+nav{
+    display:flex;
+    gap:40px;
+}
+
+nav a{
+    text-decoration:none;
+    color:#333;
+    font-size:17px;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#f8b400;
+}
+
+/* LOGIN */
+
+.login-container{
+    min-height:calc(100vh - 75px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-card{
+
+    width:420px;
+    background:#fff;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+.login-card h2{
+    text-align:center;
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+.login-card p{
+    text-align:center;
+    color:#777;
+    margin-bottom:35px;
+}
+
+.input-group{
+    display:flex;
+    align-items:center;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:20px;
+    overflow:hidden;
+}
+
+.input-group i{
+    width:50px;
+    text-align:center;
+    color:#777;
+}
+
+.input-group input{
+    flex:1;
+    border:none;
+    outline:none;
+    padding:16px;
+    font-size:16px;
+}
+
+.extra{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    font-size:14px;
+}
+
+.extra a{
+    text-decoration:none;
+    color:#f8b400;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#f8b400;
+    color:#000;
+    font-weight:bold;
+    font-size:17px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#e4a300;
+}
+
+.registro{
+    text-align:center;
+    margin-top:25px;
+}
+
+.registro a{
+    color:#f8b400;
+    text-decoration:none;
+    font-weight:bold;
+}
+.btn-warning{
+    background-color: #FFC107;
+    border-color: #FFC107;
+    color: #000;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-warning:hover{
+    background-color: #e0a800;
+    border-color: #e0a800;
+    color: #000;
+}
+.registro a{
+    color: #FFC107;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.registro a:hover{
+    color: #e0a800;
+    text-decoration: underline;
+}
+
+.registro a:visited{
+    color: #FFC107;
+}

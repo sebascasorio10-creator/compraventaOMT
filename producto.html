@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Detalle del Producto | COMPRAVENTA</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+        <div class="container">
+
+            <a class="navbar-brand" href="index.html">
+                <img src="img/logo.png" alt="Logo COMPRAVENTA" class="logo-navbar">
+                <span class="brand-text">
+                    COMPRA<span>VENTA</span>
+                </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu">
+
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 py-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#productos">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#descuentos">Descuentos</a>
+                    </li>
+                </ul>
+
+                <form class="search-box d-flex me-3" onsubmit="return false;">
+                    <input id="buscador" class="form-control" type="search" placeholder="Buscar productos...">
+                    <button class="btn btn-warning" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+
+                <!-- ICONO CARRITO DIRIGIDO A CARRITO.HTML -->
+                <a href="carrito.html" class="cart-icon me-3 position-relative" title="Ver tu carrito">
+                    <i class="bi bi-cart3"></i>
+                    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 11px;">
+                        0
+                    </span>
+                </a>
+
+                <div class="d-flex gap-2">
+                    <a href="login.html" class="btn btn-warning fw-semibold">
+                        Iniciar sesión
+                    </a>
+                    <a href="elegir_registro.html" class="btn btn-warning fw-semibold">
+                        Registrarse
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- ================= DETALLE DEL PRODUCTO ================= -->
+    <section class="product-detail-section py-5" style="margin-top: 80px;">
+        <div class="container py-4">
+
+            <!-- MIGA DE PAN (BREADCRUMB) -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html#productos">Productos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" id="det-categoria-top">Producto</li>
+                </ol>
+            </nav>
+
+            <div class="row g-5 bg-white p-4 rounded-4 shadow-sm align-items-center">
+
+                <!-- IMAGEN GRANDE DEL PRODUCTO -->
+                <div class="col-lg-6">
+                    <div class="main-product-image-container position-relative bg-light rounded-4 p-4 text-center">
+                        <span class="tag new position-absolute top-0 start-0 m-3" id="det-tag">Destacado</span>
+                        <img id="det-imagen" src="img/huaweipura.png" alt="Imagen del Producto" class="img-fluid" style="max-height: 420px; object-fit: contain;">
+                    </div>
+                </div>
+
+                <!-- INFORMACIÓN Y OPCIONES DE COMPRA -->
+                <div class="col-lg-6">
+                    <div class="product-detail-info">
+
+                        <span class="text-muted fw-semibold uppercase" id="det-categoria">CATEGORÍA</span>
+                        <h1 class="fw-bold display-6 mt-1 mb-2" id="det-nombre">Nombre del Producto</h1>
+
+                        <!-- CALIFICACIÓN -->
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="text-warning me-2">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                            </div>
+                            <span class="text-muted small">(4.8 / 5.0 basado en opiniones)</span>
+                        </div>
+
+                        <!-- PRECIO -->
+                        <div class="price display-6 fw-extrabold text-dark mb-3" id="det-precio">
+                            $0
+                        </div>
+
+                        <!-- DESCRIPCIÓN BREVE -->
+                        <p class="text-secondary leading-relaxed mb-4" id="det-descripcion">
+                            Cargando descripción...
+                        </p>
+
+                        <hr class="my-4 text-secondary">
+
+                        <!-- SELECCIÓN DE CANTIDAD -->
+                        <div class="d-flex align-items-center mb-4">
+                            <label class="fw-bold me-3">Cantidad:</label>
+                            <div class="input-group" style="width: 130px;">
+                                <button class="btn btn-outline-secondary" type="button" id="btn-menos">-</button>
+                                <input type="text" class="form-control text-center" id="input-cantidad" value="1" readonly>
+                                <button class="btn btn-outline-secondary" type="button" id="btn-mas">+</button>
+                            </div>
+                        </div>
+
+                        <!-- BOTONES DE ACCIÓN -->
+                        <div class="d-grid gap-3 d-sm-flex">
+                            <button class="btn btn-warning btn-lg fw-bold flex-fill" id="btn-add-cart">
+                                <i class="bi bi-cart-plus me-2"></i> Añadir al carrito
+                            </button>
+
+                            <a href="login.html" class="btn btn-dark btn-lg fw-bold flex-fill text-center">
+                                Comprar ahora
+                            </a>
+                        </div>
+
+                        <!-- GARANTÍA Y SEGURIDAD -->
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex align-items-center mb-2 text-muted small">
+                                <i class="bi bi-truck fs-5 text-warning me-2"></i> Envíos a todo el país con seguimiento.
+                            </div>
+                            <div class="d-flex align-items-center text-muted small">
+                                <i class="bi bi-shield-check fs-5 text-warning me-2"></i> Compra protegida por COMPRAVENTA.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 COMPRAVENTA. Todos los derechos reservados por OMT.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script de carga dinámica de productos y gestión del Carrito -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Obtener parámetros dinámicos enviados por la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const nombre = urlParams.get('nombre');
+            const precio = urlParams.get('precio');
+            const categoria = urlParams.get('categoria');
+            const img = urlParams.get('img');
+            const desc = urlParams.get('desc');
+
+            // 2. Insertar valores obtenidos en la interfaz
+            if (nombre) document.getElementById('det-nombre').textContent = nombre;
+            if (precio) document.getElementById('det-precio').textContent = precio;
+            if (categoria) {
+                document.getElementById('det-categoria').textContent = categoria.toUpperCase();
+                document.getElementById('det-categoria-top').textContent = categoria;
+            }
+            if (img) document.getElementById('det-imagen').setAttribute('src', img);
+            if (desc) document.getElementById('det-descripcion').textContent = desc;
+
+            // 3. Manejo de la cantidad
+            const btnMenos = document.getElementById('btn-menos');
+            const btnMas = document.getElementById('btn-mas');
+            const inputCantidad = document.getElementById('input-cantidad');
+
+            if (btnMenos && btnMas && inputCantidad) {
+                btnMenos.addEventListener('click', () => {
+                    let valor = parseInt(inputCantidad.value);
+                    if (valor > 1) inputCantidad.value = valor - 1;
+                });
+
+                btnMas.addEventListener('click', () => {
+                    let valor = parseInt(inputCantidad.value);
+                    inputCantidad.value = valor + 1;
+                });
+            }
+
+            // 4. Carrito de Compras en localStorage
+            const btnAddCart = document.getElementById('btn-add-cart');
+            const cartCount = document.getElementById('cart-count');
+
+            function actualizarContador() {
+                let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                let totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+                if (cartCount) cartCount.textContent = totalItems;
+            }
+
+            if (btnAddCart) {
+                btnAddCart.addEventListener('click', () => {
+                    let productoActual = {
+                        nombre: document.getElementById('det-nombre').textContent,
+                        precio: document.getElementById('det-precio').textContent,
+                        imagen: document.getElementById('det-imagen').getAttribute('src'),
+                        cantidad: parseInt(inputCantidad.value)
+                    };
+
+                    let carrito = JSON.parse(sessionStorage.getItem('carrito')) || [];
+                    
+                    let index = carrito.findIndex(item => item.nombre === productoActual.nombre);
+                    if (index !== -1) {
+                        carrito[index].cantidad += productoActual.cantidad;
+                    } else {
+                        carrito.push(productoActual);
+                    }
+
+                    sessionStorage.setItem('carrito', JSON.stringify(carrito));
+                    actualizarContador();
+
+                    alert(`¡Agregado ${productoActual.cantidad} unidad(es) de "${productoActual.nombre}" al carrito!`);
+                });
+            }
+
+            actualizarContador();
+        });
+    </script>
+
+</body>
+
+</html>
