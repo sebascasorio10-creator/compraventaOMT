@@ -456,6 +456,7 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
 
     <!-- JS propio -->
     <script src="js/app.js"></script>
+    <script src="js/carrito.js"></script>
 
 </body>
 

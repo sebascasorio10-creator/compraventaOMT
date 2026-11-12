@@ -172,7 +172,7 @@ if (footerText) {
 function actualizarContadorIndex() {
   const cartCount = document.getElementById('cart-count');
   if (cartCount) {
-    let carrito = JSON.parse(sessionStorage.getItem('carrito')) || [];
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     let totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
     cartCount.textContent = totalItems;
   }
