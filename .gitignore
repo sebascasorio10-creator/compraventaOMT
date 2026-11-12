@@ -1,0 +1,12 @@
+# Configuración local / secretos
+config/database.local.php
+.env
+.env.*
+
+# Archivos privados cargados por usuarios
+uploads/
+*.log
+
+# Entorno local
+.DS_Store
+Thumbs.db
