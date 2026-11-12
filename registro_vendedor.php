@@ -32,7 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $pdo->beginTransaction();
-        $rol = $pdo->query("SELECT id_rol FROM roles WHERE nombre = 'vendedor'")->fetchColumn();
+        $rol = $pdo->query("SELECT id_rol FROM roles WHERE LOWER(TRIM(nombre)) = 'vendedor' LIMIT 1")->fetchColumn();
+        if (!$rol) {
+            throw new RuntimeException('No existe el rol vendedor en la tabla roles. Ejecuta la verificación SQL indicada en la documentación del proyecto.');
+        }
         $usuario = $pdo->prepare("INSERT INTO usuarios (id_rol, nombres, apellidos, tipo_documento, numero_documento, correo, celular, password_hash) VALUES (?, ?, ?, 'CC', ?, ?, ?, ?)");
         $usuario->execute([$rol, $nombres, $apellidos, $documento, $correo, $celular, password_hash($password, PASSWORD_DEFAULT)]);
         $idVendedor = (int)$pdo->lastInsertId();
@@ -42,6 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
 
         $_SESSION['flash_success'] = 'Tu cuenta de vendedor fue creada. La tienda queda pendiente de verificación.';
+        // Evita reutilizar una sesión anterior (por ejemplo, la de un comprador).
+        unset($_SESSION['usuario']);
+        session_regenerate_id(true);
         header('Location: login.php');
         exit;
     } catch (PDOException $e) {
