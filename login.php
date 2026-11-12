@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/bootstrap.php';
 
 if (!empty($_SESSION['usuario'])) {
-    header('Location: ' . ($_SESSION['usuario']['rol'] === 'administrador' ? 'admin/usuarios.php' : 'index.php'));
+    $rolSesion = $_SESSION['usuario']['rol'] ?? '';\n    $destinoSesion = $rolSesion === 'administrador' ? 'admin/usuarios.php' : ($rolSesion === 'vendedor' ? 'vendedor/index.php' : 'index.php');\n    header('Location: ' . $destinoSesion);
     exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'correo' => $usuario['correo'],
         'rol' => $usuario['rol'],
     ];
-    header('Location: ' . ($usuario['rol'] === 'administrador' ? 'admin/usuarios.php' : 'index.php'));
+    $destino = $usuario['rol'] === 'administrador' ? 'admin/usuarios.php' : ($usuario['rol'] === 'vendedor' ? 'vendedor/index.php' : 'index.php');\n    header('Location: ' . $destino);
     exit;
 }
 $error = $_SESSION['flash_error'] ?? '';
