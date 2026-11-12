@@ -18,8 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $direccion = trim($_POST['direccion'] ?? '');
     $tienda = trim($_POST['nombre_tienda'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
+    $categoria = filter_var($_POST['categoria'] ?? null, FILTER_VALIDATE_INT);
 
-    if ($nombres === '' || $documento === '' || $correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL) || $celular === '' || $tienda === '' || $ciudad === '') {
+    if ($nombres === '' || $documento === '' || $correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL) || $celular === '' || $tienda === '' || $ciudad === '' || !$categoria) {
         redirigir_con_error('Completa los campos obligatorios con información válida.', 'registro_vendedor.php');
     }
     if (strlen($password) < 8 || $password !== $confirmacion) {
@@ -36,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuario->execute([$rol, $nombres, $apellidos, $documento, $correo, $celular, password_hash($password, PASSWORD_DEFAULT)]);
         $idVendedor = (int)$pdo->lastInsertId();
 
-        $tiendaStmt = $pdo->prepare('INSERT INTO tiendas (id_vendedor, nombre_tienda, descripcion, pais, departamento, ciudad, direccion) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $tiendaStmt->execute([$idVendedor, $tienda, $descripcion, $pais, $departamento, $ciudad, $direccion]);
+        $tiendaStmt = $pdo->prepare('INSERT INTO tiendas (id_vendedor, id_categoria_principal, nombre_tienda, descripcion, pais, departamento, ciudad, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $tiendaStmt->execute([$idVendedor, $categoria, $tienda, $descripcion, $pais, $departamento, $ciudad, $direccion]);
         $pdo->commit();
 
         $_SESSION['flash_success'] = 'Tu cuenta de vendedor fue creada. La tienda queda pendiente de verificación.';
@@ -52,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirigir_con_error('No se pudo crear la cuenta. Verifica los datos e inténtalo nuevamente.', 'registro_vendedor.php');
     }
 }
+$categorias = $pdo->query('SELECT id_categoria, nombre FROM categorias WHERE activa = 1 ORDER BY nombre')->fetchAll();
 $error = $_SESSION['flash_error'] ?? '';
 unset($_SESSION['flash_error']);
 ?>
@@ -82,6 +84,7 @@ unset($_SESSION['flash_error']);
 <div class="col-12 mb-3"><label class="form-label" for="direccion">Dirección</label><input id="direccion" name="direccion" class="form-control"></div>
 </div><hr><h5 class="text-warning mb-3">Información de la tienda</h5>
 <div class="mb-3"><label class="form-label" for="nombre_tienda">Nombre de la tienda *</label><input id="nombre_tienda" name="nombre_tienda" class="form-control" maxlength="120" required></div>
+<div class="mb-3"><label class="form-label" for="categoria">Categoría principal *</label><select id="categoria" name="categoria" class="form-select" required><option value="">Selecciona una categoría</option><?php foreach ($categorias as $cat): ?><option value="<?= (int)$cat['id_categoria'] ?>"><?= e($cat['nombre']) ?></option><?php endforeach; ?></select></div>
 <div class="mb-3"><label class="form-label" for="descripcion">Descripción</label><textarea id="descripcion" name="descripcion" class="form-control" rows="3"></textarea></div>
 <div class="form-check mb-4"><input class="form-check-input" type="checkbox" id="acepta_terminos" name="acepta_terminos" value="1" required><label class="form-check-label" for="acepta_terminos">Acepto los términos y condiciones.</label></div>
 <button class="btn btn-warning w-100" type="submit">Crear cuenta de vendedor</button></form>
