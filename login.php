@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/bootstrap.php';
 
 if (!empty($_SESSION['usuario'])) {
-    $rolSesion = $_SESSION['usuario']['rol'] ?? '';
+    $rolSesion = strtolower(trim((string)($_SESSION['usuario']['rol'] ?? '')));
     $destinoSesion = $rolSesion === 'administrador' ? 'admin/usuarios.php' : ($rolSesion === 'vendedor' ? 'vendedor/index.php' : 'index.php');
     header('Location: ' . $destinoSesion);
     exit;
@@ -19,13 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirigir_con_error('Correo o contraseña incorrectos, o cuenta inactiva.', 'login.php');
     }
     session_regenerate_id(true);
+    $rolNormalizado = strtolower(trim((string)$usuario['rol']));
     $_SESSION['usuario'] = [
         'id' => (int)$usuario['id_usuario'],
         'nombre' => $usuario['nombres'] . ' ' . $usuario['apellidos'],
         'correo' => $usuario['correo'],
-        'rol' => $usuario['rol'],
+        'rol' => $rolNormalizado,
     ];
-    $destino = $usuario['rol'] === 'administrador' ? 'admin/usuarios.php' : ($usuario['rol'] === 'vendedor' ? 'vendedor/index.php' : 'index.php');
+    $destino = $rolNormalizado === 'administrador' ? 'admin/usuarios.php' : ($rolNormalizado === 'vendedor' ? 'vendedor/index.php' : 'index.php');
     header('Location: ' . $destino);
     exit;
 }

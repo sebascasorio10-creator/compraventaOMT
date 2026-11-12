@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
-if (($_SESSION['usuario']['rol'] ?? '') === 'vendedor') {
+if (strtolower(trim((string)($_SESSION['usuario']['rol'] ?? ''))) === 'vendedor') {
     header('Location: vendedor/index.php');
     exit;
 }
@@ -84,7 +84,9 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
                         <span class="fw-semibold text-dark">
                             ¡Bienvenido, <?= e(explode(' ', trim($usuarioSesion['nombre']))[0]) ?>!
                         </span>
-                        <?php if (($usuarioSesion['rol'] ?? '') === 'administrador'): ?>
+                        <?php if (strtolower(trim((string)($usuarioSesion['rol'] ?? ''))) === 'vendedor'): ?>
+                            <a href="vendedor/index.php" class="btn btn-outline-dark fw-semibold">Panel vendedor</a>
+                        <?php elseif (strtolower(trim((string)($usuarioSesion['rol'] ?? ''))) === 'administrador'): ?>
                             <a href="admin/usuarios.php" class="btn btn-outline-dark fw-semibold">
                                 Panel administrador
                             </a>
