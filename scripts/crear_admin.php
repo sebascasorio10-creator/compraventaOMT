@@ -9,8 +9,8 @@ if (PHP_SAPI !== 'cli') {
 }
 require_once __DIR__ . '/../config/database.php';
 
-$correo = strtolower(trim(readline('Correo del administrador: ')));
-$nombre = trim(readline('Nombre del administrador: ')));
+echo 'Correo del administrador: ';\n$correo = strtolower(trim(fgets(STDIN)));
+echo 'Nombre del administrador: ';\n$nombre = trim(fgets(STDIN));
 echo "Contraseña (mínimo 10 caracteres): ";
 $password = trim(fgets(STDIN));
 
