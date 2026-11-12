@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/bootstrap.php';
 
-if (empty($_SESSION['usuario']) || ($_SESSION['usuario']['rol'] ?? '') !== 'vendedor') {
+if (empty($_SESSION['usuario']) || strtolower(trim((string)($_SESSION['usuario']['rol'] ?? ''))) !== 'vendedor') {
     header('Location: ../login.php');
     exit;
 }
