@@ -1,60 +1,66 @@
-# Base de datos - CompraVenta OMT
+# CompraVenta OMT — Base de datos y autenticación
 
-## Estado actual del repositorio
+## Tecnologías
+- PHP 8+ con PDO.
+- MySQL 8+ / MySQL Workbench.
+- XAMPP para ejecutar Apache y MySQL localmente.
+- Bootstrap 5.3 para las vistas de registro y administración.
 
-La interfaz actual está construida con HTML, CSS y JavaScript. Las páginas de registro e inicio de sesión son formularios visuales: todavía no envían datos a un servidor ni autentican usuarios. El carrito y algunos favoritos se manejan en el navegador, por lo que no son persistentes entre dispositivos ni están vinculados a una cuenta.
+## Estructura
+- `database/compra_venta.sql`: crea la base de datos y sus relaciones.
+- `config/database.php`: conexión PDO local. Si necesitas credenciales propias, crea `config/database.local.php` (está ignorado por Git).
+- `includes/bootstrap.php`: sesión, protección CSRF y escape de salida.
+- `registro_comprador.php` y `registro_vendedor.php`: formularios y guardado de cuentas.
+- `login.php` y `auth/logout.php`: inicio y cierre de sesión.
+- `admin/usuarios.php`: panel protegido para consultar, buscar y filtrar usuarios.
+- `scripts/crear_admin.php`: crea la primera cuenta administradora desde terminal.
 
-Este esquema agrega la estructura de MySQL para dar el siguiente paso sin cambiar el diseño de las páginas.
+## Instalación paso a paso en Windows (XAMPP + Visual Studio Code)
+1. Instala XAMPP y Visual Studio Code.
+2. En XAMPP Control Panel inicia **Apache** y **MySQL**.
+3. Abre MySQL Workbench y conéctate al servidor local (normalmente host `127.0.0.1`, puerto `3306`, usuario `root`).
+4. En Workbench abre `database/compra_venta.sql` y ejecuta el script completo con el botón del rayo.
+5. Actualiza **Schemas**. Debe aparecer `compraventa_omt` con las tablas.
+6. Copia el repositorio dentro de `C:\xampp\htdocs\compraventaOMT`.
+7. Abre esa carpeta desde Visual Studio Code.
+8. Si tu usuario MySQL tiene contraseña, crea `config/database.local.php` con este contenido:
 
-## Archivos
+```php
+<?php
+$host = '127.0.0.1';
+$dbname = 'compraventa_omt';
+$username = 'root';
+$password = 'TU_CONTRASEÑA';
+```
 
-- `database/compra_venta.sql`: crea la base de datos, tablas, relaciones e información inicial de roles y categorías.
+9. Abre `http://localhost/compraventaOMT/registro_comprador.php` o `registro_vendedor.php` para crear cuentas.
+10. Para entrar al panel, crea primero un administrador desde PowerShell:
 
-## Cómo instalar en MySQL Workbench
+```powershell
+cd C:\xampp\htdocs\compraventaOMT
+C:\xampp\php\php.exe scripts/crear_admin.php
+```
 
-1. Abre MySQL Workbench y conéctate a tu servidor local.
-2. Ve a **File > Open SQL Script** y selecciona `database/compra_venta.sql`.
-3. Ejecuta todo el script con el botón del rayo.
-4. Actualiza **Schemas** y verifica que aparezca `compraventa_omt`.
-5. Expande **Tables** para revisar las tablas creadas.
+Escribe el correo, nombre y una contraseña de al menos 10 caracteres cuando el programa lo solicite. Después entra en `http://localhost/compraventaOMT/login.php`. Al iniciar sesión con el administrador, se abrirá el panel de usuarios.
 
-## Tablas y relaciones principales
+> No abras los archivos PHP con doble clic ni con Live Server: PHP necesita Apache/XAMPP. Usa la dirección `http://localhost/...`.
 
-- `roles` 1:N `usuarios`: cada cuenta tiene un rol.
-- `usuarios` 1:0..1 `tiendas`: un vendedor puede tener una tienda.
-- `usuarios` 1:N `productos`: un vendedor publica productos.
-- `categorias` 1:N `productos`: cada producto pertenece a una categoría.
-- `productos` 1:N `producto_imagenes`: un producto puede tener varias imágenes.
-- `usuarios` N:M `productos` mediante `favoritos`.
-- `usuarios` 1:1 `carritos`; `carritos` N:M `productos` mediante `carrito_detalles`.
-- `usuarios` 1:N `pedidos`; cada pedido tiene varios `pedido_detalles`.
+## Modelo de datos
+- `roles` 1:N `usuarios`: comprador, vendedor y administrador.
+- `usuarios` 1:0..1 `tiendas`: perfil adicional del vendedor.
+- `categorias` 1:N `tiendas` y 1:N `productos`.
+- `usuarios` 1:N `productos`, `pedidos` y 1:1 `carritos`.
+- `productos` 1:N `producto_imagenes`; favoritos y carrito usan tablas intermedias.
+- `pedidos` 1:N `pedido_detalles`.
 
-## Correspondencia con los formularios actuales
+## Seguridad implementada
+- Contraseñas con `password_hash()` y verificación con `password_verify()`.
+- Consultas preparadas PDO y validación de correo/campos obligatorios.
+- Sesiones PHP con cookies HttpOnly y regeneración del ID al iniciar sesión.
+- Token CSRF en los formularios de registro y login.
+- El panel exige sesión y rol administrador.
+- No hay credenciales ni usuario administrador predeterminados en el repositorio.
+- Los documentos de identidad no se reciben ni almacenan todavía; la verificación de vendedores queda pendiente para una fase posterior.
 
-### Comprador
-- Nombre y apellido -> `usuarios.nombres`, `usuarios.apellidos`
-- Correo -> `usuarios.correo`
-- Contraseña -> `usuarios.password_hash` (guardar hash, nunca texto plano)
-- Rol -> registro `comprador` en `roles`
-
-### Vendedor
-- Nombre completo -> dividir en `usuarios.nombres` y `usuarios.apellidos`
-- Documento -> `usuarios.tipo_documento` y `usuarios.numero_documento`
-- Correo y celular -> `usuarios.correo`, `usuarios.celular`
-- País, departamento, ciudad y dirección -> `tiendas`
-- Nombre y descripción de tienda -> `tiendas.nombre_tienda`, `tiendas.descripcion`
-- Categoría -> `categorias`; el vendedor selecciona una categoría principal en su formulario, pero los productos también tienen su propia categoría.
-- Archivos del documento -> guardar únicamente rutas privadas en `tiendas.documento_frontal_ruta` y `tiendas.documento_reverso_ruta`. No guardar los archivos binarios en MySQL ni exponerlos públicamente.
-
-## Seguridad y siguiente etapa
-
-- La contraseña se procesa en PHP con `password_hash($password, PASSWORD_DEFAULT)`; al iniciar sesión se comprueba con `password_verify($password, $hash)`.
-- Usar consultas preparadas con PDO o MySQLi; nunca concatenar datos del formulario en SQL.
-- Validar en el servidor correo, campos obligatorios, tipo y tamaño de archivos, rol y precio.
-- Las credenciales de MySQL deben permanecer en un archivo de configuración del servidor fuera del directorio público y no subirse a GitHub.
-- Usar sesiones PHP para mantener el inicio de sesión; no guardar contraseñas ni tokens de sesión en localStorage.
-- El formulario HTML por sí solo no puede conectarse de forma segura a MySQL. Se necesita PHP (o un backend equivalente) y ejecutar el proyecto en un servidor local como XAMPP/WAMP/Laragon. Abrir el HTML con doble clic no ejecuta PHP.
-
-## Alcance de esta entrega
-
-Este cambio crea el esquema y su documentación. No conecta todavía los formularios HTML ni implementa registro/login, publicación de productos o checkout. Eso requiere endpoints PHP y ajustes en los formularios; se debe implementar como siguiente fase y probar localmente.
+## Alcance
+El registro de compradores y vendedores, el login/logout y el panel de usuarios están conectados al esquema. La publicación de productos, carrito persistente, pedidos y carga privada de documentos todavía requieren sus módulos PHP. Ejecuta las pruebas locales de registro y login antes de desplegar el proyecto.
