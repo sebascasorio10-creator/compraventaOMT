@@ -42,6 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
 
         $_SESSION['flash_success'] = 'Tu cuenta de vendedor fue creada. La tienda queda pendiente de verificación.';
+        // Evita reutilizar una sesión anterior (por ejemplo, la de un comprador).
+        unset($_SESSION['usuario']);
+        session_regenerate_id(true);
         header('Location: login.php');
         exit;
     } catch (PDOException $e) {

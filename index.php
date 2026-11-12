@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
+if (($_SESSION['usuario']['rol'] ?? '') === 'vendedor') {
+    header('Location: vendedor/index.php');
+    exit;
+}
 $usuarioSesion = $_SESSION['usuario'] ?? null;
 ?>
 <!DOCTYPE html>
