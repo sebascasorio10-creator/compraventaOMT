@@ -28,7 +28,7 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
 <body>
 
     <!-- ================= NAVBAR ================= -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
         <div class="container">
 
             <!-- LOGO A LA IZQUIERDA -->
