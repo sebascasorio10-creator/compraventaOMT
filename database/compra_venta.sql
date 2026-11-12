@@ -37,10 +37,19 @@ CREATE TABLE IF NOT EXISTS usuarios (
   INDEX idx_usuarios_rol_estado (id_rol, estado)
 ) ENGINE=InnoDB;
 
--- 3. Tiendas: información adicional que solo necesita un vendedor.
+-- 3. Categorías disponibles en el catálogo y tiendas.
+CREATE TABLE IF NOT EXISTS categorias (
+  id_categoria SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(80) NOT NULL UNIQUE,
+  descripcion VARCHAR(180) NULL,
+  activa BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB;
+
+-- 4. Tiendas: información adicional que solo necesita un vendedor.
 CREATE TABLE IF NOT EXISTS tiendas (
   id_tienda BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   id_vendedor BIGINT UNSIGNED NOT NULL UNIQUE,
+  id_categoria_principal SMALLINT UNSIGNED NULL,
   nombre_tienda VARCHAR(120) NOT NULL,
   descripcion TEXT NULL,
   pais VARCHAR(80) NOT NULL DEFAULT 'Colombia',
@@ -53,15 +62,9 @@ CREATE TABLE IF NOT EXISTS tiendas (
   creada_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_tiendas_vendedor FOREIGN KEY (id_vendedor)
     REFERENCES usuarios(id_usuario)
-    ON DELETE CASCADE
-) ENGINE=InnoDB;
-
--- 4. Categorías disponibles en el catálogo.
-CREATE TABLE IF NOT EXISTS categorias (
-  id_categoria SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(80) NOT NULL UNIQUE,
-  descripcion VARCHAR(180) NULL,
-  activa BOOLEAN NOT NULL DEFAULT TRUE
+    ON DELETE CASCADE,
+  CONSTRAINT fk_tiendas_categoria FOREIGN KEY (id_categoria_principal)
+    REFERENCES categorias(id_categoria)
 ) ENGINE=InnoDB;
 
 -- 5. Productos publicados por vendedores.
