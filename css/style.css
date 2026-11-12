@@ -513,3 +513,113 @@ a {
         gap: 15px;
     }
 }
+
+/* =========================
+   NAVBAR FLOTANTE CON FONDO DEL CARRUSEL
+   ========================= */
+
+.navbar {
+    top: 14px;
+    left: 24px;
+    right: 24px;
+    width: calc(100% - 48px);
+    height: auto;
+    min-height: 80px;
+    padding: 10px 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background-image: linear-gradient(rgba(12, 16, 22, .76), rgba(12, 16, 22, .76)), url('../img/almacen_confianza.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(255, 255, 255, .2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .22) !important;
+    transition: background-image .45s ease, box-shadow .3s ease;
+}
+
+.navbar > .container {
+    position: relative;
+    z-index: 1;
+}
+
+.navbar-brand,
+.navbar .brand-text,
+.navbar .nav-link,
+.navbar .cart-icon,
+.navbar .fw-semibold {
+    color: #fff !important;
+}
+
+.navbar .nav-link {
+    transition: color .2s ease, opacity .2s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--primary) !important;
+}
+
+.navbar .search-box .form-control {
+    background: rgba(255, 255, 255, .94);
+    border: 1px solid rgba(255, 255, 255, .45);
+}
+
+.navbar .cart-icon:hover {
+    color: var(--primary) !important;
+}
+
+.navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, .55);
+}
+
+.navbar .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+@media (max-width: 991.98px) {
+    .navbar {
+        left: 12px;
+        right: 12px;
+        width: calc(100% - 24px);
+        top: 10px;
+        padding: 10px 0;
+    }
+
+    .navbar .navbar-collapse {
+        margin-top: 12px;
+        padding: 14px;
+        border-radius: 12px;
+        background: rgba(12, 16, 22, .88);
+        backdrop-filter: blur(12px);
+    }
+
+    .navbar .search-box {
+        width: 100%;
+    }
+
+    .navbar .search-box input {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .navbar .navbar-nav {
+        padding-top: 0 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar {
+        left: 8px;
+        right: 8px;
+        width: calc(100% - 16px);
+        border-radius: 14px;
+    }
+
+    .brand-text {
+        font-size: 20px;
+    }
+
+    .navbar .d-flex.gap-2 {
+        flex-wrap: wrap;
+    }
+}
