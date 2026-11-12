@@ -25,6 +25,12 @@ function changeSlide(index) {
     heroSection.style.backgroundImage = `url('${heroImages[currentSlide]}')`;
   }
 
+  // Mantener el fondo de la barra flotante sincronizado con el carrusel.
+  const floatingNavbar = document.querySelector(".navbar");
+  if (floatingNavbar) {
+    floatingNavbar.style.backgroundImage = `linear-gradient(rgba(12, 16, 22, .76), rgba(12, 16, 22, .76)), url('${heroImages[currentSlide]}')`;
+  }
+
   dots.forEach(dot => {
     dot.classList.remove("active");
   });
