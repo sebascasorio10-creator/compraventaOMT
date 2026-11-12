@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/bootstrap.php';
 
 if (!empty($_SESSION['usuario'])) {
-    header('Location: ' . ($_SESSION['usuario']['rol'] === 'administrador' ? 'admin/usuarios.php' : 'index.html'));
+    header('Location: ' . ($_SESSION['usuario']['rol'] === 'administrador' ? 'admin/usuarios.php' : 'index.php'));
     exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'correo' => $usuario['correo'],
         'rol' => $usuario['rol'],
     ];
-    header('Location: ' . ($usuario['rol'] === 'administrador' ? 'admin/usuarios.php' : 'index.html'));
+    header('Location: ' . ($usuario['rol'] === 'administrador' ? 'admin/usuarios.php' : 'index.php'));
     exit;
 }
 $error = $_SESSION['flash_error'] ?? '';
@@ -31,7 +31,7 @@ $success = $_SESSION['flash_success'] ?? '';
 unset($_SESSION['flash_error'], $_SESSION['flash_success']);
 ?>
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Iniciar sesión | CompraVenta</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="css/login.css"></head><body>
-<header class="navbar"><div class="logo"><span class="negro">COMPRA</span><span class="amarillo">VENTA</span></div><nav><a href="index.html">Inicio</a><a href="index.html#productos">Productos</a></nav></header>
+<header class="navbar"><div class="logo"><span class="negro">COMPRA</span><span class="amarillo">VENTA</span></div><nav><a href="index.php">Inicio</a><a href="index.html#productos">Productos</a></nav></header>
 <section class="login-container"><div class="login-card"><h2>Bienvenido</h2><p>Inicia sesión para continuar</p>
 <?php if ($error): ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?><?php if ($success): ?><div class="alert alert-success"><?= e($success) ?></div><?php endif; ?>
 <form method="POST" action="login.php"><input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
