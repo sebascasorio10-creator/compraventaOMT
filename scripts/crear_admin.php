@@ -1,7 +1,7 @@
 <?php
 /**
- * Ejecutar SOLO desde terminal, no desde el navegador:
- * php scripts/crear_admin.php
+ * Ejecutar SOLO desde terminal:
+ * C:\\xampp\\php\\php.exe scripts/crear_admin.php
  */
 if (PHP_SAPI !== 'cli') {
     http_response_code(403);
@@ -9,8 +9,10 @@ if (PHP_SAPI !== 'cli') {
 }
 require_once __DIR__ . '/../config/database.php';
 
-echo 'Correo del administrador: ';\n$correo = strtolower(trim(fgets(STDIN)));
-echo 'Nombre del administrador: ';\n$nombre = trim(fgets(STDIN));
+echo 'Correo del administrador: ';
+$correo = strtolower(trim(fgets(STDIN)));
+echo 'Nombre del administrador: ';
+$nombre = trim(fgets(STDIN));
 echo "Contraseña (mínimo 10 caracteres): ";
 $password = trim(fgets(STDIN));
 
