@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['flash_success'] = 'Estado del producto actualizado.';
             volverPanel();
         } elseif ($accion === 'eliminar') {
-            $stmt = $pdo->prepare('UPDATE productos SET estado="eliminado" WHERE id_producto=? AND id_vendedor=? AND estado <> "eliminado"');
+            $stmt = $pdo->prepare('UPDATE productos SET estado="eliminado" WHERE id_producto=? AND id_vendedor=? AND estado NOT IN ("eliminado","vendido")');
             $stmt->execute([(int)($_POST['id_producto'] ?? 0), $idVendedor]);
             $_SESSION['flash_success'] = 'Producto retirado de tus publicaciones.';
             volverPanel();
