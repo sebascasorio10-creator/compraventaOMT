@@ -3,6 +3,8 @@ require_once __DIR__ . '/includes/bootstrap.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+class PedidoValidationException extends RuntimeException {}
+
 function responderPedido(int $codigo, array $datos): void {
     http_response_code($codigo);
     echo json_encode($datos, JSON_UNESCAPED_UNICODE);
@@ -33,12 +35,12 @@ function insertarRegistro(PDO $pdo, string $tabla, array $datos, array $columnas
         $esGenerada = strpos($extra, 'generated') !== false;
         $esObligatoria = ($meta['Null'] ?? 'YES') === 'NO' && ($meta['Default'] ?? null) === null;
         if ($esObligatoria && !$esAutoincremental && !$esGenerada && !array_key_exists($campo, $datosValidos)) {
-            throw new RuntimeException("La tabla {$tabla} requiere el campo {$campo}; revisa la estructura de la base de datos.");
+            throw new PedidoValidationException("La tabla {$tabla} requiere el campo {$campo}; revisa la estructura de la base de datos.");
         }
     }
 
     if (!$datosValidos) {
-        throw new RuntimeException("No se encontraron columnas compatibles en la tabla {$tabla}.");
+        throw new PedidoValidationException("No se encontraron columnas compatibles en la tabla {$tabla}.");
     }
 
     $nombres = array_keys($datosValidos);
@@ -128,19 +130,19 @@ try {
     $total = 0.0;
     foreach ($cantidades as $idProducto => $cantidad) {
         if (!isset($productosEncontrados[$idProducto])) {
-            throw new RuntimeException("El producto #{$idProducto} ya no está disponible. Retíralo del carrito.");
+            throw new PedidoValidationException("El producto #{$idProducto} ya no está disponible. Retíralo del carrito.");
         }
         $producto = $productosEncontrados[$idProducto];
         if (($producto['estado'] ?? '') !== 'publicado') {
-            throw new RuntimeException('Uno de los productos ya no está publicado. Actualiza tu carrito.');
+            throw new PedidoValidationException('Uno de los productos ya no está publicado. Actualiza tu carrito.');
         }
         if ($cantidad > (int)$producto['cantidad_disponible']) {
-            throw new RuntimeException('No hay unidades suficientes de "' . $producto['nombre'] . '". Disponibles: ' . (int)$producto['cantidad_disponible'] . '.');
+            throw new PedidoValidationException('No hay unidades suficientes de "' . $producto['nombre'] . '". Disponibles: ' . (int)$producto['cantidad_disponible'] . '.');
         }
 
         $precio = round((float)$producto['precio'], 2);
         if (!is_finite($precio) || $precio <= 0) {
-            throw new RuntimeException('Uno de los productos tiene un precio inválido. Contacta al vendedor.');
+            throw new PedidoValidationException('Uno de los productos tiene un precio inválido. Contacta al vendedor.');
         }
         $subtotal = round($precio * $cantidad, 2);
         $total = round($total + $subtotal, 2);
@@ -158,7 +160,7 @@ try {
     $columnaComprador = isset($columnasPedidos['id_comprador']) ? 'id_comprador' : (isset($columnasPedidos['id_usuario']) ? 'id_usuario' : null);
     $columnaTotal = isset($columnasPedidos['total']) ? 'total' : (isset($columnasPedidos['total_pedido']) ? 'total_pedido' : (isset($columnasPedidos['monto_total']) ? 'monto_total' : null));
     if (!$columnaComprador || !$columnaTotal) {
-        throw new RuntimeException('La tabla pedidos no tiene las columnas de comprador y total esperadas. Se requiere revisar el esquema antes de guardar compras.');
+        throw new PedidoValidationException('La tabla pedidos no tiene las columnas de comprador y total esperadas. Se requiere revisar el esquema antes de guardar compras.');
     }
 
     $datosPedido = [
@@ -209,7 +211,7 @@ try {
         'estado' => 'pendiente',
         'mensaje' => 'El pedido quedó registrado y está pendiente de pago o confirmación.',
     ]);
-} catch (RuntimeException $e) {
+} catch (PedidoValidationException $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
