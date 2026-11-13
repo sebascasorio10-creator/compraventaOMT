@@ -1,6 +1,27 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
 $usuarioSesion = $_SESSION['usuario'] ?? null;
+
+$productosPublicados = [];
+try {
+    $catalogoStmt = $pdo->query(
+        "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.condicion, p.ciudad,
+                c.nombre AS categoria,
+                (SELECT pi.ruta_imagen
+                 FROM producto_imagenes pi
+                 WHERE pi.id_producto = p.id_producto
+                 ORDER BY pi.es_principal DESC, pi.orden ASC
+                 LIMIT 1) AS imagen
+         FROM productos p
+         INNER JOIN categorias c ON c.id_categoria = p.id_categoria
+         WHERE p.estado = 'publicado' AND p.cantidad_disponible > 0
+         ORDER BY p.creado_en DESC
+         LIMIT 24"
+    );
+    $productosPublicados = $catalogoStmt->fetchAll();
+} catch (Throwable $e) {
+    error_log('No fue posible cargar el catálogo de vendedores: ' . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -359,6 +380,50 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
                     </div>
                 </div>
 
+            </div>
+
+            <div class="mt-5">
+                <div class="section-header">
+                    <div>
+                        <h2>Productos publicados por vendedores</h2>
+                        <p>Artículos disponibles en el inventario de CompraVenta.</p>
+                    </div>
+                </div>
+
+                <?php if ($productosPublicados): ?>
+                    <div class="row g-4">
+                        <?php foreach ($productosPublicados as $productoPublicado):
+                            $imagenProducto = $productoPublicado['imagen'] ?: 'img/logo.png';
+                            $urlProducto = 'producto.html?' . http_build_query([
+                                'id_producto' => (int)$productoPublicado['id_producto'],
+                                'nombre' => $productoPublicado['nombre'],
+                                'precio' => (string)round((float)$productoPublicado['precio']),
+                                'categoria' => $productoPublicado['categoria'],
+                                'img' => $imagenProducto,
+                                'desc' => $productoPublicado['descripcion'],
+                            ]);
+                        ?>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="product-card producto" data-nombre="<?= e(strtolower($productoPublicado['nombre'] . ' ' . $productoPublicado['categoria'])) ?>">
+                                    <div class="product-image">
+                                        <span class="tag new"><?= e(ucfirst($productoPublicado['condicion'] ?? 'Publicado')) ?></span>
+                                        <img src="<?= e($imagenProducto) ?>" alt="<?= e($productoPublicado['nombre']) ?>" loading="lazy">
+                                    </div>
+                                    <div class="product-info">
+                                        <h5><?= e($productoPublicado['nombre']) ?></h5>
+                                        <p class="category"><?= e($productoPublicado['categoria']) ?></p>
+                                        <div class="price">$<?= number_format((float)$productoPublicado['precio'], 0, ',', '.') ?></div>
+                                        <a href="<?= e($urlProducto) ?>" class="btn btn-warning w-100">Ver producto</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-light border">
+                        Todavía no hay productos publicados por vendedores con unidades disponibles.
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>
