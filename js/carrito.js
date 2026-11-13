@@ -117,6 +117,10 @@
             alert('No fue posible agregar este producto. Verifica sus datos.');
             return;
         }
+        if (!nuevo.id_producto) {
+            alert('Este artículo es una muestra del catálogo y todavía no está registrado en el inventario de MySQL. Puedes agregar productos publicados por vendedores.');
+            return;
+        }
 
         const carrito = obtener();
         const existente = carrito.find(item => item.id === nuevo.id);
