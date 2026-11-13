@@ -163,16 +163,24 @@ try {
         throw new PedidoValidationException('La tabla pedidos no tiene las columnas de comprador y total esperadas. Se requiere revisar el esquema antes de guardar compras.');
     }
 
+    if (!isset($columnasPedidos['estado'])) {
+        throw new PedidoValidationException('La tabla pedidos necesita una columna estado para registrar pedidos sin marcarlos como pagados.');
+    }
+    $estadoPedido = estadoPendiente($columnasPedidos['estado']);
+    if ($estadoPedido === null) {
+        $estadoPredeterminado = strtolower((string)($columnasPedidos['estado']['Default'] ?? ''));
+        if (in_array($estadoPredeterminado, ['pendiente', 'pendiente_pago', 'pendiente de pago'], true)) {
+            $estadoPedido = $estadoPredeterminado;
+        } else {
+            throw new PedidoValidationException('El campo estado de pedidos no admite un estado pendiente. No se creó el pedido para evitar marcarlo como pagado o completado.');
+        }
+    }
+
     $datosPedido = [
         $columnaComprador => (int)$_SESSION['usuario']['id'],
         $columnaTotal => number_format($total, 2, '.', ''),
+        'estado' => $estadoPedido,
     ];
-    if (isset($columnasPedidos['estado'])) {
-        $estado = estadoPendiente($columnasPedidos['estado']);
-        if ($estado !== null) {
-            $datosPedido['estado'] = $estado;
-        }
-    }
     foreach (['fecha_pedido', 'creado_en', 'created_at'] as $campoFecha) {
         if (isset($columnasPedidos[$campoFecha])) {
             $datosPedido[$campoFecha] = date('Y-m-d H:i:s');
@@ -208,7 +216,7 @@ try {
         'success' => true,
         'pedido_id' => $idPedido,
         'total' => number_format($total, 2, '.', ''),
-        'estado' => 'pendiente',
+        'estado' => $estadoPedido,
         'mensaje' => 'El pedido quedó registrado y está pendiente de pago o confirmación.',
     ]);
 } catch (PedidoValidationException $e) {
