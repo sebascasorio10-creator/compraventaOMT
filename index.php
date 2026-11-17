@@ -372,6 +372,7 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
 
 
     <!-- ================= SECCIÓN VENDER ================= -->
+    <?php if (!$usuarioSesion): ?>
     <section class="sell-section">
         <div class="container">
             <div class="sell-box">
@@ -388,6 +389,7 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
 
     <!-- ================= FOOTER ================= -->
@@ -428,7 +430,7 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
                     <ul>
                         <li><a href="#">Nosotros</a></li>
                         <li><a href="#">Blog</a></li>
-                        <li><a href="registro_vendedor.php">Vendedores</a></li>
+                        <?php if (!$usuarioSesion): ?><li><a href="elegir_registro.php">Crear cuenta</a></li><?php endif; ?>
                     </ul>
                 </div>
 
