@@ -63,6 +63,11 @@ $stats = [
     'pedidos' => (int)$pdo->query('SELECT COUNT(*) FROM pedidos')->fetchColumn(),
 ];
 
+$usuariosPorRol = $pdo->query("SELECT r.nombre AS etiqueta, COUNT(*) AS total FROM usuarios u INNER JOIN roles r ON r.id_rol=u.id_rol GROUP BY r.nombre ORDER BY r.id_rol")->fetchAll();
+$productosPorEstado = $pdo->query("SELECT estado AS etiqueta, COUNT(*) AS total FROM productos WHERE estado <> 'eliminado' GROUP BY estado ORDER BY estado")->fetchAll();
+$pedidosPorEstado = $pdo->query("SELECT estado AS etiqueta, COUNT(*) AS total FROM pedidos GROUP BY estado ORDER BY estado")->fetchAll();
+$registrosPorMes = $pdo->query("SELECT DATE_FORMAT(creado_en, '%Y-%m') AS periodo, COUNT(*) AS total FROM usuarios WHERE creado_en >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH) GROUP BY DATE_FORMAT(creado_en, '%Y-%m') ORDER BY periodo")->fetchAll();
+
 $usuarios = $productos = $tiendas = [];
 if ($vista === 'usuarios') {
     $usuarios = $pdo->query("SELECT u.id_usuario,u.nombres,u.apellidos,u.correo,u.estado,u.creado_en,r.nombre AS rol FROM usuarios u INNER JOIN roles r ON r.id_rol=u.id_rol ORDER BY u.creado_en DESC LIMIT 200")->fetchAll();
@@ -97,6 +102,12 @@ if ($vista === 'usuarios') {
 <div class="col-sm-6 col-xl-4"><div class="card stat-card h-100"><div class="card-body d-flex align-items-center gap-3"><div class="stat-icon"><i class="bi <?= e($s[2]) ?>"></i></div><div><div class="text-secondary small"><?= e($s[0]) ?></div><div class="fs-3 fw-bold"><?= (int)$s[1] ?></div></div></div></div></div>
 <?php endforeach; ?>
 </div>
+<div class="row g-3 mb-4">
+<div class="col-lg-6"><div class="card panel-card h-100"><div class="card-body"><h2 class="h5 fw-bold">Usuarios por tipo</h2><p class="small text-secondary">Distribución de compradores, vendedores y administradores.</p><div style="height:260px"><canvas id="chartRoles" aria-label="Usuarios por tipo"></canvas></div></div></div></div>
+<div class="col-lg-6"><div class="card panel-card h-100"><div class="card-body"><h2 class="h5 fw-bold">Estado de publicaciones</h2><p class="small text-secondary">Productos publicados, pausados, borradores y otros estados.</p><div style="height:260px"><canvas id="chartProductos" aria-label="Estado de publicaciones"></canvas></div></div></div></div>
+<div class="col-lg-6"><div class="card panel-card h-100"><div class="card-body"><h2 class="h5 fw-bold">Pedidos por estado</h2><p class="small text-secondary">Resumen de los pedidos registrados.</p><div style="height:260px"><canvas id="chartPedidos" aria-label="Pedidos por estado"></canvas></div></div></div></div>
+<div class="col-lg-6"><div class="card panel-card h-100"><div class="card-body"><h2 class="h5 fw-bold">Nuevos usuarios</h2><p class="small text-secondary">Registros agrupados por mes, últimos seis meses.</p><div style="height:260px"><canvas id="chartRegistros" aria-label="Nuevos usuarios por mes"></canvas></div></div></div></div>
+</div>
 <div class="row g-3"><div class="col-lg-4"><div class="card panel-card h-100"><div class="card-body"><i class="bi bi-people fs-2 text-warning"></i><h2 class="h5 mt-3">Gestión de usuarios</h2><p class="text-secondary small">Consulta cuentas y activa o suspende compradores y vendedores.</p><a class="btn btn-outline-dark btn-sm" href="index.php?vista=usuarios">Administrar usuarios</a></div></div></div>
 <div class="col-lg-4"><div class="card panel-card h-100"><div class="card-body"><i class="bi bi-box-seam fs-2 text-warning"></i><h2 class="h5 mt-3">Publicaciones</h2><p class="text-secondary small">Revisa los productos publicados y pausa o reactiva publicaciones.</p><a class="btn btn-outline-dark btn-sm" href="index.php?vista=productos">Revisar productos</a></div></div></div>
 <div class="col-lg-4"><div class="card panel-card h-100"><div class="card-body"><i class="bi bi-shop fs-2 text-warning"></i><h2 class="h5 mt-3">Verificación de tiendas</h2><p class="text-secondary small">Consulta las tiendas y gestiona su estado de verificación.</p><a class="btn btn-outline-dark btn-sm" href="index.php?vista=tiendas">Gestionar tiendas</a></div></div></div></div>
@@ -116,4 +127,23 @@ if ($vista === 'usuarios') {
 <?php foreach($tiendas as $t): ?><tr><td class="fw-semibold"><?= e($t['nombre_tienda']) ?></td><td><?= e(trim($t['nombres'].' '.$t['apellidos'])) ?></td><td><?= e($t['correo']) ?></td><td><?= e($t['ciudad']) ?></td><td><span class="badge <?= $t['estado_verificacion']==='verificada'?'text-bg-success':($t['estado_verificacion']==='rechazada'?'text-bg-danger':'text-bg-warning') ?>"><?= e(ucfirst($t['estado_verificacion'])) ?></span></td><td><form method="post" class="d-flex gap-1 flex-wrap"><input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>"><input type="hidden" name="accion" value="verificar_tienda"><input type="hidden" name="id" value="<?= (int)$t['id_tienda'] ?>"><button class="btn btn-sm btn-success" name="estado" value="verificada">Verificar</button><button class="btn btn-sm btn-outline-danger" name="estado" value="rechazada">Rechazar</button><button class="btn btn-sm btn-outline-secondary" name="estado" value="pendiente">Pendiente</button></form></td></tr><?php endforeach; ?>
 <?php if(!$tiendas): ?><tr><td colspan="6" class="text-center text-secondary">No hay tiendas registradas.</td></tr><?php endif; ?></tbody></table></div></div></div>
 <?php endif; ?>
-</main></div></div></body></html>
+</main></div></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<?php if ($vista === 'inicio'): ?>
+<script>
+const crearGrafico = (id, tipo, etiquetas, valores) => {
+    const elemento = document.getElementById(id);
+    if (!elemento) return;
+    new Chart(elemento, {
+        type: tipo,
+        data: { labels: etiquetas, datasets: [{ data: valores, borderWidth: 2, backgroundColor: ['#ffc107','#343a40','#198754','#0d6efd','#dc3545','#6f42c1'], borderColor: '#ffffff' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: tipo === 'doughnut' ? 'bottom' : 'top' } }, scales: tipo === 'bar' || tipo === 'line' ? { y: { beginAtZero: true, ticks: { precision: 0 } } } : {} }
+    });
+};
+crearGrafico('chartRoles','doughnut',<?= json_encode(array_column($usuariosPorRol,'etiqueta'), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT) ?>,<?= json_encode(array_map('intval',array_column($usuariosPorRol,'total'))) ?>);
+crearGrafico('chartProductos','bar',<?= json_encode(array_column($productosPorEstado,'etiqueta'), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT) ?>,<?= json_encode(array_map('intval',array_column($productosPorEstado,'total'))) ?>);
+crearGrafico('chartPedidos','doughnut',<?= json_encode(array_column($pedidosPorEstado,'etiqueta'), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT) ?>,<?= json_encode(array_map('intval',array_column($pedidosPorEstado,'total'))) ?>);
+crearGrafico('chartRegistros','line',<?= json_encode(array_column($registrosPorMes,'periodo'), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT) ?>,<?= json_encode(array_map('intval',array_column($registrosPorMes,'total'))) ?>);
+</script>
+<?php endif; ?>
+</body></html>
