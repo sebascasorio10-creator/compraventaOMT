@@ -37,7 +37,7 @@ if ($idProducto > 0) {
     $nombre = trim((string)($_GET['nombre'] ?? ''));
     $precio = trim((string)($_GET['precio'] ?? ''));
     $categoria = trim((string)($_GET['categoria'] ?? ''));
-    $imagen = trim((string)($_GET['img'] ?? 'img/logo-omt.svg'));
+    $imagen = trim((string)($_GET['img'] ?? 'img/logo.png'));
     $descripcion = trim((string)($_GET['desc'] ?? ''));
     if ($nombre !== '' && $precio !== '') {
         $producto = [
@@ -61,7 +61,7 @@ if ($idProducto > 0) {
 
 $usuarioSesion = $_SESSION['usuario'] ?? null;
 $nombreProducto = $producto['nombre'] ?? 'Producto no disponible';
-$imagenProducto = $producto['imagen'] ?: 'img/logo-omt.svg';
+$imagenProducto = $producto['imagen'] ?: 'img/logo.png';
 $precioProducto = (float)($producto['precio'] ?? 0);
 $stockProducto = (int)($producto['cantidad_disponible'] ?? 0);
 $resenas = [];
@@ -145,7 +145,7 @@ if (!$noEncontrado && $producto) {
 <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
-            <img src="img/logo-omt.svg" alt="CompraVenta OMT" class="logo-navbar">
+            <img src="img/logo.png" alt="Logo original CompraVenta OMT" class="logo-navbar">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-label="Abrir menú">
             <span class="navbar-toggler-icon"></span>
@@ -265,7 +265,7 @@ if (!$noEncontrado && $producto) {
                 </div>
                 <div class="row g-4">
                     <?php foreach ($recomendaciones as $recomendado):
-                        $imagenRecomendada = $recomendado['imagen'] ?: 'img/logo-omt.svg';
+                        $imagenRecomendada = $recomendado['imagen'] ?: 'img/logo.png';
                         $urlRecomendado = 'producto.php?' . http_build_query(['id_producto' => (int)$recomendado['id_producto']], '', '&', PHP_QUERY_RFC3986);
                     ?>
                     <div class="col-lg-3 col-md-6">
