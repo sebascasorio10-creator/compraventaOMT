@@ -225,6 +225,32 @@
         migrarCarritoAnterior();
         actualizarContador();
 
+        // Botones de compra rápida desde las tarjetas del catálogo y recomendaciones.
+        document.addEventListener('click', evento => {
+            const botonRapido = evento.target.closest('.btn-add-producto');
+            if (!botonRapido) return;
+
+            const stock = Math.max(1, Number(botonRapido.dataset.productStock || 99));
+            const producto = agregar({
+                id_producto: Number(botonRapido.dataset.productId) || null,
+                nombre: botonRapido.dataset.productName,
+                precio: botonRapido.dataset.productPrice,
+                imagen: botonRapido.dataset.productImage,
+                cantidad: 1
+            }, 1);
+
+            if (producto) {
+                const textoOriginal = botonRapido.innerHTML;
+                botonRapido.innerHTML = '<i class="bi bi-check2 me-1"></i>Agregado';
+                botonRapido.disabled = true;
+                window.setTimeout(() => {
+                    botonRapido.innerHTML = textoOriginal;
+                    botonRapido.disabled = false;
+                }, 1200);
+                alert('¡' + producto.nombre + ' se agregó al carrito!');
+            }
+        });
+
         const botonAgregar = document.getElementById('btn-add-cart');
         if (botonAgregar) {
             const parametros = new URLSearchParams(window.location.search);
@@ -233,20 +259,18 @@
             const categoria = parametros.get('categoria');
             const imagen = parametros.get('img');
             const descripcion = parametros.get('desc');
-            const idProducto = Number(parametros.get('id_producto'));
 
-            if (nombre) document.getElementById('det-nombre').textContent = nombre;
-            if (precio) document.getElementById('det-precio').textContent = precio;
-            if (categoria) {
-                document.getElementById('det-categoria').textContent = categoria.toUpperCase();
-                document.getElementById('det-categoria-top').textContent = categoria;
-            }
-            if (imagen) document.getElementById('det-imagen').src = imagenSegura(imagen);
-            if (descripcion) document.getElementById('det-descripcion').textContent = descripcion;
+            // Mantiene compatibilidad con enlaces antiguos a producto.html.
+            if (nombre && document.getElementById('det-nombre')) document.getElementById('det-nombre').textContent = nombre;
+            if (precio && document.getElementById('det-precio')) document.getElementById('det-precio').textContent = precio;
+            if (categoria && document.getElementById('det-categoria')) document.getElementById('det-categoria').textContent = categoria.toUpperCase();
+            if (imagen && document.getElementById('det-imagen')) document.getElementById('det-imagen').src = imagenSegura(imagen);
+            if (descripcion && document.getElementById('det-descripcion')) document.getElementById('det-descripcion').textContent = descripcion;
 
             const cantidadInput = document.getElementById('input-cantidad');
             const stockDisponible = Math.max(1, Number(botonAgregar.dataset.stock || 99));
-            cantidadInput.max = String(stockDisponible);
+            if (cantidadInput) cantidadInput.max = String(stockDisponible);
+
             document.getElementById('btn-menos')?.addEventListener('click', () => {
                 cantidadInput.value = Math.max(1, Number(cantidadInput.value) - 1);
             });
@@ -255,14 +279,14 @@
             });
 
             botonAgregar.addEventListener('click', () => {
-                const cantidadSolicitada = Math.min(stockDisponible, Math.max(1, Number(cantidadInput.value) || 1));
-                cantidadInput.value = String(cantidadSolicitada);
+                const cantidadSolicitada = Math.min(stockDisponible, Math.max(1, Number(cantidadInput?.value) || 1));
+                if (cantidadInput) cantidadInput.value = String(cantidadSolicitada);
                 const producto = agregar({
-                    id_producto: Number.isInteger(idProducto) && idProducto > 0 ? idProducto : null,
-                    nombre: document.getElementById('det-nombre').textContent,
-                    precio: document.getElementById('det-precio').textContent,
-                    imagen: document.getElementById('det-imagen').getAttribute('src')
-                }, Number(cantidadInput.value));
+                    id_producto: Number(botonAgregar.dataset.productId) || null,
+                    nombre: botonAgregar.dataset.productName || document.getElementById('det-nombre')?.textContent,
+                    precio: botonAgregar.dataset.productPrice || document.getElementById('det-precio')?.textContent,
+                    imagen: botonAgregar.dataset.productImage || document.getElementById('det-imagen')?.getAttribute('src')
+                }, cantidadSolicitada);
 
                 if (producto) {
                     alert('¡Se agregó ' + producto.cantidad + ' unidad(es) de "' + producto.nombre + '" al carrito!');
