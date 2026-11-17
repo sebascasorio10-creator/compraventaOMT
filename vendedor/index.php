@@ -177,6 +177,15 @@ $productos = $productosStmt->fetchAll();
 $ventasStmt = $pdo->prepare('SELECT pd.id_detalle, pd.nombre_producto, pd.cantidad, pd.subtotal, pe.id_pedido, pe.fecha_pedido, pe.estado FROM pedido_detalles pd INNER JOIN pedidos pe ON pe.id_pedido=pd.id_pedido WHERE pd.id_vendedor=? ORDER BY pe.fecha_pedido DESC LIMIT 100');
 $ventasStmt->execute([$idVendedor]);
 $ventas = $ventasStmt->fetchAll();
+$resumenVentasStmt = $pdo->prepare('SELECT COUNT(DISTINCT pe.id_pedido) AS pedidos, COALESCE(SUM(pd.cantidad),0) AS unidades, COALESCE(SUM(pd.subtotal),0) AS ingresos FROM pedido_detalles pd INNER JOIN pedidos pe ON pe.id_pedido=pd.id_pedido WHERE pd.id_vendedor=?');
+$resumenVentasStmt->execute([$idVendedor]);
+$resumenVentas = $resumenVentasStmt->fetch() ?: ['pedidos'=>0,'unidades'=>0,'ingresos'=>0];
+$ventasPorMesStmt = $pdo->prepare("SELECT DATE_FORMAT(pe.fecha_pedido, '%Y-%m') AS periodo, COALESCE(SUM(pd.subtotal),0) AS ingresos FROM pedido_detalles pd INNER JOIN pedidos pe ON pe.id_pedido=pd.id_pedido WHERE pd.id_vendedor=? AND pe.fecha_pedido >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH) GROUP BY DATE_FORMAT(pe.fecha_pedido, '%Y-%m') ORDER BY periodo");
+$ventasPorMesStmt->execute([$idVendedor]);
+$ventasPorMes = $ventasPorMesStmt->fetchAll();
+$productosMasVendidosStmt = $pdo->prepare('SELECT pd.nombre_producto, SUM(pd.cantidad) AS unidades, SUM(pd.subtotal) AS ingresos FROM pedido_detalles pd INNER JOIN pedidos pe ON pe.id_pedido=pd.id_pedido WHERE pd.id_vendedor=? GROUP BY pd.nombre_producto ORDER BY unidades DESC LIMIT 5');
+$productosMasVendidosStmt->execute([$idVendedor]);
+$productosMasVendidos = $productosMasVendidosStmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Panel vendedor | CompraVenta</title>
@@ -215,6 +224,30 @@ body{background:#f5f6f8;color:#292929}.navbar-brand{font-weight:800;letter-spaci
 <?php else: ?>
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"><div><h3 class="fw-bold mb-1">Hola, <?= e(explode(' ',trim($_SESSION['usuario']['nombre']))[0]) ?></h3><p class="muted mb-0">Este es el resumen de tu tienda.</p></div><a href="index.php?vista=nuevo" class="btn btn-warning"><i class="bi bi-plus-lg me-1"></i>Publicar producto</a></div>
 <div class="row g-3 mb-4"><div class="col-sm-6 col-xl-3"><div class="stat-card"><div class="muted">Productos activos y guardados</div><div class="stat-number"><?= (int)$stats['total'] ?></div></div></div><div class="col-sm-6 col-xl-3"><div class="stat-card"><div class="muted">Publicados</div><div class="stat-number"><?= (int)$stats['publicados'] ?></div></div></div><div class="col-sm-6 col-xl-3"><div class="stat-card"><div class="muted">Borradores</div><div class="stat-number"><?= (int)$stats['borradores'] ?></div></div></div><div class="col-sm-6 col-xl-3"><div class="stat-card"><div class="muted">Pausados</div><div class="stat-number"><?= (int)$stats['pausados'] ?></div></div></div></div>
+<div class="row g-3 mb-4">
+<div class="col-sm-6 col-xl-4"><div class="stat-card"><div class="muted">Pedidos recibidos</div><div class="stat-number"><?= (int)$resumenVentas['pedidos'] ?></div></div></div>
+<div class="col-sm-6 col-xl-4"><div class="stat-card"><div class="muted">Unidades vendidas</div><div class="stat-number"><?= (int)$resumenVentas['unidades'] ?></div></div></div>
+<div class="col-sm-6 col-xl-4"><div class="stat-card"><div class="muted">Ingresos registrados</div><div class="stat-number">$<?= number_format((float)$resumenVentas['ingresos'],0,',','.') ?></div></div></div>
+</div>
+<div class="row g-3 mb-4">
+<div class="col-lg-7"><div class="content-card"><h5 class="fw-bold mb-1">Ingresos por mes</h5><p class="muted small">Suma de subtotales de pedidos de los últimos seis meses.</p><div style="height:280px"><canvas id="sellerSalesChart" aria-label="Ingresos mensuales"></canvas></div></div></div>
+<div class="col-lg-5"><div class="content-card"><h5 class="fw-bold mb-3">Productos más vendidos</h5><?php if (!$productosMasVendidos): ?><p class="muted mb-0">Todavía no hay ventas para mostrar.</p><?php else: ?><div class="table-responsive"><table class="table table-sm align-middle"><thead><tr><th>Producto</th><th>Unidades</th></tr></thead><tbody><?php foreach($productosMasVendidos as $top): ?><tr><td><?= e($top['nombre_producto']) ?></td><td class="fw-semibold"><?= (int)$top['unidades'] ?></td></tr><?php endforeach; ?></tbody></table></div><?php endif; ?></div></div>
+</div>
 <div class="content-card"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="fw-bold mb-0">Tus publicaciones recientes</h5><a href="index.php?vista=productos" class="text-decoration-none">Ver todos</a></div><?php if(!$productos): ?><p class="muted mb-0">Todavía no tienes productos. Publica el primero para comenzar.</p><?php else: ?><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Producto</th><th>Precio</th><th>Estado</th><th></th></tr></thead><tbody><?php foreach(array_slice($productos,0,5) as $p): ?><tr><td><?= e($p['nombre']) ?></td><td>$<?= number_format((float)$p['precio'],0,',','.') ?></td><td><?= e(ucfirst($p['estado'])) ?></td><td><a href="index.php?editar=<?= (int)$p['id_producto'] ?>" class="btn btn-sm btn-outline-dark">Editar</a></td></tr><?php endforeach; ?></tbody></table></div><?php endif; ?></div>
 <?php endif; ?>
-</main></div></div></body></html>
+</main></div></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<?php if ($vista !== 'ventas' && $vista !== 'productos' && $vista !== 'nuevo' && !$idEditar): ?>
+<script>
+const ventasCanvas = document.getElementById('sellerSalesChart');
+if (ventasCanvas) new Chart(ventasCanvas, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode(array_column($ventasPorMes,'periodo'), JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT) ?>,
+        datasets: [{ label: 'Ingresos (COP)', data: <?= json_encode(array_map('floatval',array_column($ventasPorMes,'ingresos'))) ?>, borderColor: '#d69e00', backgroundColor: 'rgba(255,193,7,.18)', fill: true, tension: .3 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: value => ' + Number(value).toLocaleString('es-CO') } } } }
+});
+</script>
+<?php endif; ?>
+</body></html>
