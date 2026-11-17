@@ -53,7 +53,7 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
 
             <!-- LOGO A LA IZQUIERDA -->
             <a class="navbar-brand" href="index.php">
-                <img src="img/logo.png" alt="Logo COMPRAVENTA" class="logo-navbar">
+                <img src="img/logo-omt.svg" alt="CompraVenta OMT" class="logo-navbar">
                 <span class="brand-text">
                     COMPRA<span>VENTA</span>
                 </span>
@@ -236,7 +236,8 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <p class="category">Tecnología</p>
                             <div class="price">$899.000</div>
                             <a href="producto.php?nombre=Smartphone%20Premium&precio=$899.000&categoria=Tecnología&img=img/huaweipura.png&desc=Disfruta%20de%20la%20última%20tecnología%20móvil%20con%20pantalla%20de%20alta%20definición,%20cámara%20profesional%20de%20múltiples%20lentes%20y%20batería%20de%20larga%20duración."
-                                class="btn btn-warning w-100">Ver producto</a>
+                                class="btn btn-warning w-100 mb-2">Ver producto</a>
+                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Smartphone Premium" data-product-price="899000" data-product-image="img/huaweipura.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
                         </div>
                     </div>
                 </div>
@@ -256,7 +257,8 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <p class="category">Electrónica</p>
                             <div class="price">$120.000</div>
                             <a href="producto.php?nombre=Audífonos%20inalámbricos&precio=$120.000&categoria=Electrónica&img=img/audifonos_inalambricos.png&desc=Cancelación%20de%20ruido%20activa,%20conexión%20Bluetooth%205.3%20de%20baja%20latencia%20y%20hasta%2024%20horas%20de%20reproducción%20continua%20con%20estuche%20de%20carga."
-                                class="btn btn-warning w-100">Ver producto</a>
+                                class="btn btn-warning w-100 mb-2">Ver producto</a>
+                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Audífonos inalámbricos" data-product-price="120000" data-product-image="img/audifonos_inalambricos.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
                         </div>
                     </div>
                 </div>
@@ -276,7 +278,8 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <p class="category">Accesorios</p>
                             <div class="price">$250.000</div>
                             <a href="producto.php?nombre=Reloj%20inteligente&precio=$250.000&categoria=Accesorios&img=img/reloj_inteligente.png&desc=Monitoreo%20de%20ritmo%20cardíaco,%20seguimiento%20del%20sueño,%20GPS%20integrado%20y%20resistencia%20al%20agua.%20Compatible%20con%20Android%20y%20iOS."
-                                class="btn btn-warning w-100">Ver producto</a>
+                                class="btn btn-warning w-100 mb-2">Ver producto</a>
+                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Reloj inteligente" data-product-price="250000" data-product-image="img/reloj_inteligente.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
                         </div>
                     </div>
                 </div>
@@ -296,7 +299,8 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <p class="category">Computadores</p>
                             <div class="price">$2.500.000</div>
                             <a href="producto.php?nombre=Laptop%20profesional&precio=$2.500.000&categoria=Computadores&img=img/portatilhp.png&desc=Procesador%20de%20última%20generación,%2016GB%20RAM%20y%20SSD%20ultrarrápido.%20Ideal%20para%20trabajo%20pesado,%20diseño%20y%20multitarea."
-                                class="btn btn-warning w-100">Ver producto</a>
+                                class="btn btn-warning w-100 mb-2">Ver producto</a>
+                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Laptop profesional" data-product-price="2500000" data-product-image="img/portatilhp.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
                         </div>
                     </div>
                 </div>
@@ -336,7 +340,15 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                                 <?= e($productoPublicado['nombre_tienda'] ?: 'Vendedor') ?>
                                 · <?= (int)$productoPublicado['cantidad_disponible'] ?> disponibles
                             </small>
-                            <a href="<?= e($urlDetalle) ?>" class="btn btn-warning w-100">Ver producto</a>
+                            <a href="<?= e($urlDetalle) ?>" class="btn btn-warning w-100 mb-2">Ver producto</a>
+                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto"
+                                data-product-id="<?= (int)$productoPublicado['id_producto'] ?>"
+                                data-product-name="<?= e($productoPublicado['nombre']) ?>"
+                                data-product-price="<?= e((string)$productoPublicado['precio']) ?>"
+                                data-product-image="<?= e($imagenPublicada) ?>"
+                                data-product-stock="<?= (int)$productoPublicado['cantidad_disponible'] ?>">
+                                <i class="bi bi-cart-plus me-1"></i>Añadir al carrito
+                            </button>
                         </div>
                     </article>
                 </div>
