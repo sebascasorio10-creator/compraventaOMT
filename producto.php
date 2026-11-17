@@ -64,11 +64,11 @@ $nombreProducto = $producto['nombre'] ?? 'Producto no disponible';
 $imagenProducto = $producto['imagen'] ?: 'img/logo-omt.svg';
 $precioProducto = (float)($producto['precio'] ?? 0);
 $stockProducto = (int)($producto['cantidad_disponible'] ?? 0);
-$reseñas = [];
+$resenas = [];
 $promedioResenas = 0;
 $totalResenas = 0;
 $recomendaciones = [];
-$reseñasDisponibles = false;
+$resenasDisponibles = false;
 
 if (!$noEncontrado && $producto) {
     // La tabla se crea con database/migracion_resenas.sql. Si aún no se ha aplicado,
@@ -84,13 +84,13 @@ if (!$noEncontrado && $producto) {
              LIMIT 8
         ");
         $resenasStmt->execute([(int)$producto['id_producto']]);
-        $reseñas = $resenasStmt->fetchAll();
+        $resenas = $resenasStmt->fetchAll();
         $resumenStmt = $pdo->prepare("SELECT COUNT(*) AS total, COALESCE(AVG(calificacion), 0) AS promedio FROM resenas_productos WHERE id_producto = ?");
         $resumenStmt->execute([(int)$producto['id_producto']]);
         $resumen = $resumenStmt->fetch();
         $totalResenas = (int)($resumen['total'] ?? 0);
         $promedioResenas = (float)($resumen['promedio'] ?? 0);
-        $reseñasDisponibles = true;
+        $resenasDisponibles = true;
     } catch (PDOException $e) {
         error_log('Tabla de reseñas no disponible: ' . $e->getMessage());
     }
@@ -292,13 +292,13 @@ if (!$noEncontrado && $producto) {
                     <div><h2 id="resenas-titulo" class="h3 fw-bold">Opiniones y reseñas</h2><p class="mb-0">Conoce lo que opinan otros compradores.</p></div>
                     <?php if ($totalResenas > 0): ?><div class="text-end"><div class="h3 fw-bold mb-0"><?= number_format($promedioResenas, 1, ',', '.') ?>/5</div><div class="text-warning"><?= str_repeat('★', (int)round($promedioResenas)) ?></div><small class="text-muted"><?= $totalResenas ?> opiniones</small></div><?php endif; ?>
                 </div>
-                <?php if (!$reseñasDisponibles): ?>
+                <?php if (!$resenasDisponibles): ?>
                     <div class="alert alert-info">La sección de reseñas está lista. Para activarla en tu base de datos, ejecuta una sola vez el archivo <code>database/migracion_resenas.sql</code>.</div>
-                <?php elseif (!$reseñas): ?>
+                <?php elseif (!$resenas): ?>
                     <div class="bg-white rounded-4 p-4 shadow-sm text-muted mb-4">Este producto todavía no tiene reseñas. ¡Puedes ser el primero en opinar!</div>
                 <?php else: ?>
                     <div class="row g-3 mb-4">
-                        <?php foreach ($reseñas as $resena): ?>
+                        <?php foreach ($resenas as $resena): ?>
                         <div class="col-md-6">
                             <article class="review-card bg-white rounded-4 p-4 h-100 shadow-sm">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -313,7 +313,7 @@ if (!$noEncontrado && $producto) {
                     </div>
                 <?php endif; ?>
 
-                <?php if ($reseñasDisponibles && $idProducto > 0): ?>
+                <?php if ($resenasDisponibles && $idProducto > 0): ?>
                     <div class="bg-white rounded-4 shadow-sm p-4">
                         <?php if ($usuarioSesion && strtolower((string)($usuarioSesion['rol'] ?? '')) === 'comprador'): ?>
                             <h3 class="h5 fw-bold mb-3">Comparte tu opinión</h3>
