@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/bootstrap.php';
 
 if (!empty($_SESSION['usuario'])) {
     $rolSesion = strtolower(trim((string)($_SESSION['usuario']['rol'] ?? '')));
-    $destinoSesion = $rolSesion === 'administrador' ? 'admin/usuarios.php' : ($rolSesion === 'vendedor' ? 'vendedor/index.php' : 'index.php');
+    $destinoSesion = $rolSesion === 'administrador' ? 'admin/index.php' : ($rolSesion === 'vendedor' ? 'vendedor/index.php' : 'index.php');
     header('Location: ' . $destinoSesion);
     exit;
 }
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'correo' => $usuario['correo'],
         'rol' => $rolNormalizado,
     ];
-    $destino = $rolNormalizado === 'administrador' ? 'admin/usuarios.php' : ($rolNormalizado === 'vendedor' ? 'vendedor/index.php' : 'index.php');
+    $destino = $rolNormalizado === 'administrador' ? 'admin/index.php' : ($rolNormalizado === 'vendedor' ? 'vendedor/index.php' : 'index.php');
     header('Location: ' . $destino);
     exit;
 }
