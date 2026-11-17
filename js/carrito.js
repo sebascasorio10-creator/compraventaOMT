@@ -100,7 +100,13 @@
 
     function numeroPrecio(precio) {
         if (typeof precio === 'number') return Math.max(0, Math.round(precio));
-        return Number(String(precio).replace(/[^0-9]/g, '')) || 0;
+        const texto = String(precio ?? '').trim();
+        // MySQL suele entregar DECIMAL como "150000.00"; no debe leerse como 15000000.
+        if (/^\\d+(?:\\.\\d{1,2})?$/.test(texto)) {
+            return Math.max(0, Math.round(Number(texto)));
+        }
+        // También admite precios formateados como "$150.000" o "$150,000".
+        return Number(texto.replace(/[^0-9]/g, '')) || 0;
     }
 
     function formatoPrecio(valor) {
