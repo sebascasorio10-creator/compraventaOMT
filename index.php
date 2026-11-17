@@ -104,7 +104,7 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                         <?php if (strtolower(trim((string)($usuarioSesion['rol'] ?? ''))) === 'vendedor'): ?>
                             <a href="vendedor/index.php" class="btn btn-outline-dark fw-semibold">Panel vendedor</a>
                         <?php elseif (strtolower(trim((string)($usuarioSesion['rol'] ?? ''))) === 'administrador'): ?>
-                            <a href="admin/usuarios.php" class="btn btn-outline-dark fw-semibold">
+                            <a href="admin/index.php" class="btn btn-outline-dark fw-semibold">
                                 Panel administrador
                             </a>
                         <?php endif; ?>
