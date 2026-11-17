@@ -21,23 +21,52 @@ function volverPanel(): void {
 }
 
 function guardarImagen(?array $archivo): ?string {
-    if (!$archivo || ($archivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return null;
-    if ($archivo['error'] !== UPLOAD_ERR_OK || $archivo['size'] > 5 * 1024 * 1024) {
-        throw new RuntimeException('La imagen supera 5 MB o no se pudo cargar.');
+    if (!$archivo || !isset($archivo['error']) || $archivo['error'] === UPLOAD_ERR_NO_FILE) {
+        return null;
     }
+
+    $errores = [
+        UPLOAD_ERR_INI_SIZE => 'La imagen supera el límite configurado en PHP. Abre php.ini de XAMPP y aumenta upload_max_filesize y post_max_size.',
+        UPLOAD_ERR_FORM_SIZE => 'La imagen supera el tamaño permitido por el formulario.',
+        UPLOAD_ERR_PARTIAL => 'La imagen llegó incompleta. Intenta seleccionarla de nuevo.',
+        UPLOAD_ERR_NO_TMP_DIR => 'PHP no tiene una carpeta temporal para recibir imágenes.',
+        UPLOAD_ERR_CANT_WRITE => 'PHP no pudo escribir el archivo temporal. Revisa permisos y espacio en disco.',
+        UPLOAD_ERR_EXTENSION => 'Una extensión de PHP detuvo la carga de la imagen.'
+    ];
+    $codigoError = (int)$archivo['error'];
+    if ($codigoError !== UPLOAD_ERR_OK) {
+        throw new RuntimeException($errores[$codigoError] ?? 'No se pudo recibir la imagen (código ' . $codigoError . ').');
+    }
+
+    $maximo = 5 * 1024 * 1024;
+    if ((int)($archivo['size'] ?? 0) <= 0 || (int)$archivo['size'] > $maximo) {
+        throw new RuntimeException('La imagen debe pesar más de 0 bytes y máximo 5 MB.');
+    }
+    if (empty($archivo['tmp_name']) || !is_uploaded_file($archivo['tmp_name'])) {
+        throw new RuntimeException('La carga de la imagen no es válida. Selecciona el archivo nuevamente.');
+    }
+    if (!class_exists('finfo')) {
+        throw new RuntimeException('La extensión fileinfo de PHP no está habilitada en XAMPP.');
+    }
+
     $info = new finfo(FILEINFO_MIME_TYPE);
     $mime = $info->file($archivo['tmp_name']);
     $extensiones = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
     if (!isset($extensiones[$mime]) || @getimagesize($archivo['tmp_name']) === false) {
-        throw new RuntimeException('Usa una imagen JPG, PNG o WEBP válida.');
+        throw new RuntimeException('Formato no válido. Usa una imagen JPG, PNG o WEBP real.');
     }
+
     $directorio = __DIR__ . '/../uploads/productos';
     if (!is_dir($directorio) && !mkdir($directorio, 0755, true) && !is_dir($directorio)) {
-        throw new RuntimeException('No fue posible preparar la carpeta de imágenes.');
+        throw new RuntimeException('No se pudo crear uploads/productos. Revisa los permisos de la carpeta del proyecto.');
     }
+    if (!is_writable($directorio)) {
+        throw new RuntimeException('La carpeta uploads/productos no tiene permisos de escritura.');
+    }
+
     $nombre = bin2hex(random_bytes(16)) . '.' . $extensiones[$mime];
     if (!move_uploaded_file($archivo['tmp_name'], $directorio . '/' . $nombre)) {
-        throw new RuntimeException('No fue posible guardar la imagen.');
+        throw new RuntimeException('PHP recibió la imagen, pero no pudo moverla a uploads/productos.');
     }
     return 'uploads/productos/' . $nombre;
 }
@@ -49,6 +78,7 @@ unset($_SESSION['flash_error'], $_SESSION['flash_success']);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     validar_csrf();
     $accion = $_POST['accion'] ?? '';
+    $imagenNueva = null;
     try {
         if ($accion === 'guardar') {
             $idProducto = filter_var($_POST['id_producto'] ?? 0, FILTER_VALIDATE_INT) ?: 0;
@@ -71,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!(int)$cat->fetchColumn()) throw new RuntimeException('Selecciona una categoría disponible.');
 
             $imagen = guardarImagen($_FILES['imagen'] ?? null);
+            $imagenNueva = $imagen;
             if ($idProducto) {
                 $propio = $pdo->prepare('SELECT id_producto FROM productos WHERE id_producto = ? AND id_vendedor = ? AND estado <> "eliminado"');
                 $propio->execute([$idProducto, $idVendedor]);
@@ -117,7 +148,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
-        $_SESSION['flash_error'] = $e instanceof RuntimeException ? $e->getMessage() : 'No se pudo completar la operación. Inténtalo nuevamente.';
+        if ($imagenNueva) {
+            $rutaNueva = __DIR__ . '/../' . $imagenNueva;
+            if (is_file($rutaNueva)) @unlink($rutaNueva);
+        }
+        error_log($e->getMessage());
+        $_SESSION['flash_error'] = $e instanceof RuntimeException ? $e->getMessage() : 'No se pudo guardar el producto. Revisa la estructura de la base de datos y el registro de errores de PHP.';
         volverPanel();
     }
 }
@@ -169,7 +205,7 @@ body{background:#f5f6f8;color:#292929}.navbar-brand{font-weight:800;letter-spaci
 <div class="col-md-4"><label class="form-label">Condición</label><select class="form-select" name="condicion"><?php foreach(['nuevo'=>'Nuevo','usado'=>'Usado','reacondicionado'=>'Reacondicionado'] as $v=>$label): ?><option value="<?= $v ?>" <?= ($productoEditar['condicion']??'nuevo')===$v?'selected':'' ?>><?= $label ?></option><?php endforeach; ?></select></div>
 <div class="col-md-6"><label class="form-label">Ciudad</label><input class="form-control" name="ciudad" maxlength="100" value="<?= e($productoEditar['ciudad']??($tienda['ciudad']??'')) ?>"></div>
 <div class="col-md-6"><label class="form-label">Estado de publicación</label><select class="form-select" name="estado"><option value="publicado" <?= ($productoEditar['estado']??'publicado')==='publicado'?'selected':'' ?>>Publicado</option><option value="borrador" <?= ($productoEditar['estado']??'')==='borrador'?'selected':'' ?>>Borrador</option></select></div>
-<div class="col-12"><label class="form-label">Imagen del producto (JPG, PNG o WEBP; máximo 5 MB)</label><input class="form-control" type="file" name="imagen" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"><?php if(!empty($productoEditar['imagen'])): ?><div class="mt-2"><img src="../<?= e($productoEditar['imagen']) ?>" alt="Imagen actual" class="product-thumb"></div><?php endif; ?></div>
+<div class="col-12"><label class="form-label">Imagen del producto (JPG, PNG o WEBP; máximo 5 MB)</label><input class="form-control" type="file" name="imagen" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" <?= $idEditar ? '' : 'required' ?>><?php if(!empty($productoEditar['imagen'])): ?><div class="mt-2"><img src="../<?= e($productoEditar['imagen']) ?>" alt="Imagen actual" class="product-thumb"></div><?php endif; ?></div>
 <div class="col-12"><button class="btn btn-warning px-4" type="submit"><?= $idEditar?'Guardar cambios':'Publicar producto' ?></button></div></div></form>
 <?php elseif ($vista==='ventas'): ?>
 <h3 class="fw-bold mb-1">Ventas</h3><p class="muted mb-4">Pedidos que incluyen productos de tu tienda.</p><div class="content-card"><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Pedido</th><th>Fecha</th><th>Producto</th><th>Cantidad</th><th>Subtotal</th><th>Estado</th></tr></thead><tbody><?php foreach($ventas as $v): ?><tr><td>#<?= (int)$v['id_pedido'] ?></td><td><?= e(date('d/m/Y',strtotime($v['fecha_pedido']))) ?></td><td><?= e($v['nombre_producto']) ?></td><td><?= (int)$v['cantidad'] ?></td><td>$<?= number_format((float)$v['subtotal'],0,',','.') ?></td><td><span class="badge text-bg-light"><?= e(ucfirst($v['estado'])) ?></span></td></tr><?php endforeach; ?><?php if(!$ventas): ?><tr><td colspan="6" class="text-center muted py-4">Todavía no tienes ventas registradas.</td></tr><?php endif; ?></tbody></table></div></div>
