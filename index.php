@@ -54,9 +54,6 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
             <!-- LOGO A LA IZQUIERDA -->
             <a class="navbar-brand" href="index.php">
                 <img src="img/logo-omt.svg" alt="CompraVenta OMT" class="logo-navbar">
-                <span class="brand-text">
-                    COMPRA<span>VENTA</span>
-                </span>
             </a>
 
             <!-- BOTÓN MOBILE -->
