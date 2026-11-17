@@ -69,7 +69,7 @@ if ($vista === 'usuarios') {
 } elseif ($vista === 'productos') {
     $productos = $pdo->query("SELECT p.id_producto,p.nombre,p.precio,p.estado,p.cantidad_disponible,p.creado_en,u.nombres,u.apellidos,t.nombre_tienda FROM productos p INNER JOIN usuarios u ON u.id_usuario=p.id_vendedor LEFT JOIN tiendas t ON t.id_vendedor=p.id_vendedor WHERE p.estado <> 'eliminado' ORDER BY p.creado_en DESC LIMIT 200")->fetchAll();
 } elseif ($vista === 'tiendas') {
-    $tiendas = $pdo->query("SELECT t.id_tienda,t.nombre_tienda,t.ciudad,t.estado_verificacion,t.creado_en,u.nombres,u.apellidos,u.correo FROM tiendas t INNER JOIN usuarios u ON u.id_usuario=t.id_vendedor ORDER BY t.id_tienda DESC LIMIT 200")->fetchAll();
+    $tiendas = $pdo->query("SELECT t.id_tienda,t.nombre_tienda,t.ciudad,t.estado_verificacion,u.nombres,u.apellidos,u.correo FROM tiendas t INNER JOIN usuarios u ON u.id_usuario=t.id_vendedor ORDER BY t.id_tienda DESC LIMIT 200")->fetchAll();
 }
 ?>
 <!doctype html>
