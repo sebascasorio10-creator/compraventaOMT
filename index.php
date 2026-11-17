@@ -235,7 +235,7 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <h5>Smartphone Premium</h5>
                             <p class="category">Tecnología</p>
                             <div class="price">$899.000</div>
-                            <a href="producto.html?nombre=Smartphone%20Premium&precio=$899.000&categoria=Tecnología&img=img/huaweipura.png&desc=Disfruta%20de%20la%20última%20tecnología%20móvil%20con%20pantalla%20de%20alta%20definición,%20cámara%20profesional%20de%20múltiples%20lentes%20y%20batería%20de%20larga%20duración."
+                            <a href="producto.php?nombre=Smartphone%20Premium&precio=$899.000&categoria=Tecnología&img=img/huaweipura.png&desc=Disfruta%20de%20la%20última%20tecnología%20móvil%20con%20pantalla%20de%20alta%20definición,%20cámara%20profesional%20de%20múltiples%20lentes%20y%20batería%20de%20larga%20duración."
                                 class="btn btn-warning w-100">Ver producto</a>
                         </div>
                     </div>
@@ -255,7 +255,7 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <h5>Audífonos inalámbricos</h5>
                             <p class="category">Electrónica</p>
                             <div class="price">$120.000</div>
-                            <a href="producto.html?nombre=Audífonos%20inalámbricos&precio=$120.000&categoria=Electrónica&img=img/audifonos_inalambricos.png&desc=Cancelación%20de%20ruido%20activa,%20conexión%20Bluetooth%205.3%20de%20baja%20latencia%20y%20hasta%2024%20horas%20de%20reproducción%20continua%20con%20estuche%20de%20carga."
+                            <a href="producto.php?nombre=Audífonos%20inalámbricos&precio=$120.000&categoria=Electrónica&img=img/audifonos_inalambricos.png&desc=Cancelación%20de%20ruido%20activa,%20conexión%20Bluetooth%205.3%20de%20baja%20latencia%20y%20hasta%2024%20horas%20de%20reproducción%20continua%20con%20estuche%20de%20carga."
                                 class="btn btn-warning w-100">Ver producto</a>
                         </div>
                     </div>
@@ -275,7 +275,7 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <h5>Reloj inteligente</h5>
                             <p class="category">Accesorios</p>
                             <div class="price">$250.000</div>
-                            <a href="producto.html?nombre=Reloj%20inteligente&precio=$250.000&categoria=Accesorios&img=img/reloj_inteligente.png&desc=Monitoreo%20de%20ritmo%20cardíaco,%20seguimiento%20del%20sueño,%20GPS%20integrado%20y%20resistencia%20al%20agua.%20Compatible%20con%20Android%20y%20iOS."
+                            <a href="producto.php?nombre=Reloj%20inteligente&precio=$250.000&categoria=Accesorios&img=img/reloj_inteligente.png&desc=Monitoreo%20de%20ritmo%20cardíaco,%20seguimiento%20del%20sueño,%20GPS%20integrado%20y%20resistencia%20al%20agua.%20Compatible%20con%20Android%20y%20iOS."
                                 class="btn btn-warning w-100">Ver producto</a>
                         </div>
                     </div>
@@ -295,7 +295,7 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                             <h5>Laptop profesional</h5>
                             <p class="category">Computadores</p>
                             <div class="price">$2.500.000</div>
-                            <a href="producto.html?nombre=Laptop%20profesional&precio=$2.500.000&categoria=Computadores&img=img/portatilhp.png&desc=Procesador%20de%20última%20generación,%2016GB%20RAM%20y%20SSD%20ultrarrápido.%20Ideal%20para%20trabajo%20pesado,%20diseño%20y%20multitarea."
+                            <a href="producto.php?nombre=Laptop%20profesional&precio=$2.500.000&categoria=Computadores&img=img/portatilhp.png&desc=Procesador%20de%20última%20generación,%2016GB%20RAM%20y%20SSD%20ultrarrápido.%20Ideal%20para%20trabajo%20pesado,%20diseño%20y%20multitarea."
                                 class="btn btn-warning w-100">Ver producto</a>
                         </div>
                     </div>
@@ -321,14 +321,7 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
             <div class="row g-4">
                 <?php foreach ($productosPublicados as $productoPublicado):
                     $imagenPublicada = $productoPublicado['imagen'] ?: 'img/logo.png';
-                    $urlDetalle = 'producto.html?' . http_build_query([
-                        'id_producto' => (int)$productoPublicado['id_producto'],
-                        'nombre' => $productoPublicado['nombre'],
-                        'precio' => number_format((float)$productoPublicado['precio'], 0, ',', '.'),
-                        'categoria' => $productoPublicado['categoria'],
-                        'img' => $imagenPublicada,
-                        'desc' => $productoPublicado['descripcion']
-                    ], '', '&', PHP_QUERY_RFC3986);
+                    $urlDetalle = 'producto.php?' . http_build_query(['id_producto' => (int)$productoPublicado['id_producto']], '', '&', PHP_QUERY_RFC3986);
                 ?>
                 <div class="col-lg-3 col-md-6">
                     <article class="product-card h-100">
