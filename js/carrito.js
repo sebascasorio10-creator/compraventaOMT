@@ -19,6 +19,8 @@
     }
 
     function claveProducto(producto) {
+        const idProducto = Number(producto.id_producto);
+        if (Number.isInteger(idProducto) && idProducto > 0) return 'producto:' + idProducto;
         return producto.id || [producto.nombre, producto.precio, producto.imagen].join('|');
     }
 
@@ -34,8 +36,10 @@
             return null;
         }
 
+        const idProducto = Number(producto.id_producto);
         return {
             id: claveProducto({ ...producto, nombre, precio, imagen }),
+            id_producto: Number.isInteger(idProducto) && idProducto > 0 ? idProducto : null,
             nombre,
             precio: String(precio),
             imagen: imagenSegura(imagen),
@@ -229,6 +233,7 @@
             const categoria = parametros.get('categoria');
             const imagen = parametros.get('img');
             const descripcion = parametros.get('desc');
+            const idProducto = Number(parametros.get('id_producto'));
 
             if (nombre) document.getElementById('det-nombre').textContent = nombre;
             if (precio) document.getElementById('det-precio').textContent = precio;
@@ -249,6 +254,7 @@
 
             botonAgregar.addEventListener('click', () => {
                 const producto = agregar({
+                    id_producto: Number.isInteger(idProducto) && idProducto > 0 ? idProducto : null,
                     nombre: document.getElementById('det-nombre').textContent,
                     precio: document.getElementById('det-precio').textContent,
                     imagen: document.getElementById('det-imagen').getAttribute('src')
