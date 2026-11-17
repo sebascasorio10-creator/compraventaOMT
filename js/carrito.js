@@ -245,14 +245,18 @@
             if (descripcion) document.getElementById('det-descripcion').textContent = descripcion;
 
             const cantidadInput = document.getElementById('input-cantidad');
+            const stockDisponible = Math.max(1, Number(botonAgregar.dataset.stock || 99));
+            cantidadInput.max = String(stockDisponible);
             document.getElementById('btn-menos')?.addEventListener('click', () => {
                 cantidadInput.value = Math.max(1, Number(cantidadInput.value) - 1);
             });
             document.getElementById('btn-mas')?.addEventListener('click', () => {
-                cantidadInput.value = Math.min(99, Number(cantidadInput.value) + 1);
+                cantidadInput.value = Math.min(stockDisponible, Number(cantidadInput.value) + 1);
             });
 
             botonAgregar.addEventListener('click', () => {
+                const cantidadSolicitada = Math.min(stockDisponible, Math.max(1, Number(cantidadInput.value) || 1));
+                cantidadInput.value = String(cantidadSolicitada);
                 const producto = agregar({
                     id_producto: Number.isInteger(idProducto) && idProducto > 0 ? idProducto : null,
                     nombre: document.getElementById('det-nombre').textContent,
