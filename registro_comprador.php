@@ -17,16 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $rol = $pdo->prepare("SELECT id_rol FROM roles WHERE nombre = 'comprador'");
-        $rol->execute();
-        $idRol = $rol->fetchColumn();
+        $rol = $pdo->query("SELECT id_rol FROM roles WHERE LOWER(TRIM(nombre)) = 'comprador' LIMIT 1")->fetchColumn();
+        if (!$rol) {
+            throw new RuntimeException('No existe el rol comprador en la tabla roles.');
+        }
         $stmt = $pdo->prepare('INSERT INTO usuarios (id_rol, nombres, apellidos, correo, password_hash) VALUES (?, ?, ?, ?, ?)');
-        $stmt->execute([$idRol, $nombres, $apellidos, $correo, password_hash($password, PASSWORD_DEFAULT)]);
+        $stmt->execute([(int)$rol, $nombres, $apellidos, $correo, password_hash($password, PASSWORD_DEFAULT)]);
         $_SESSION['flash_success'] = 'Tu cuenta de comprador fue creada. Ya puedes iniciar sesión.';
         header('Location: login.php');
         exit;
-    } catch (PDOException $e) {
-        if ($e->getCode() === '23000') {
+    } catch (Throwable $e) {
+        if ($e instanceof PDOException && $e->getCode() === '23000') {
             redirigir_con_error('Ese correo ya está registrado.', 'registro_comprador.php');
         }
         error_log($e->getMessage());

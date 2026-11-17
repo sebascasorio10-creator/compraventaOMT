@@ -23,7 +23,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
         <div class="container">
 
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="index.php">
                 <img src="img/logo.png" alt="Logo COMPRAVENTA" class="logo-navbar">
                 <span class="brand-text">
                     COMPRA<span>VENTA</span>
@@ -38,13 +38,13 @@
 
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0 py-2">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Inicio</a>
+                        <a class="nav-link" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html#productos">Productos</a>
+                        <a class="nav-link" href="index.php#productos">Productos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html#descuentos">Descuentos</a>
+                        <a class="nav-link" href="index.php#descuentos">Descuentos</a>
                     </li>
                 </ul>
 
@@ -94,7 +94,7 @@
                         <i class="bi bi-cart-x text-muted display-1 mb-3"></i>
                         <h4>Tu carrito está vacío</h4>
                         <p class="text-muted">Explora nuestro catálogo y agrega los mejores productos al mejor precio.</p>
-                        <a href="index.html#productos" class="btn btn-warning btn-lg fw-bold mt-2">
+                        <a href="index.php#productos" class="btn btn-warning btn-lg fw-bold mt-2">
                             Explorar productos <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
@@ -155,133 +155,8 @@
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script Lógico del Carrito -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const contenedorProductos = document.getElementById('contenedor-productos');
-            const carritoVacio = document.getElementById('carrito-vacio');
-            const cartCount = document.getElementById('cart-count');
-            const resumenSubtotal = document.getElementById('resumen-subtotal');
-            const resumenTotal = document.getElementById('resumen-total');
-            const btnVaciar = document.getElementById('btn-vaciar-carrito');
-
-            function parsearPrecio(precioStr) {
-                return parseInt(precioStr.replace(/[^0-9]/g, '')) || 0;
-            }
-
-            function formatearPrecio(numero) {
-                return '$' + numero.toLocaleString('es-CO');
-            }
-
-            function renderizarCarrito() {
-                let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-                // Actualizar contador badge
-                let totalCantidad = carrito.reduce((sum, p) => sum + p.cantidad, 0);
-                if (cartCount) cartCount.textContent = totalCantidad;
-
-                if (carrito.length === 0) {
-                    if (contenedorProductos) contenedorProductos.style.display = 'none';
-                    if (carritoVacio) carritoVacio.style.display = 'block';
-                    if (resumenSubtotal) resumenSubtotal.textContent = '$0';
-                    if (resumenTotal) resumenTotal.textContent = '$0';
-                    return;
-                }
-
-                if (carritoVacio) carritoVacio.style.display = 'none';
-                if (contenedorProductos) {
-                    contenedorProductos.style.display = 'flex';
-                    contenedorProductos.innerHTML = '';
-                }
-
-                let subtotalTotal = 0;
-
-                carrito.forEach((prod, index) => {
-                    let precioNumerico = parsearPrecio(prod.precio);
-                    let subtotalProducto = precioNumerico * prod.cantidad;
-                    subtotalTotal += subtotalProducto;
-
-                    const itemHTML = `
-                        <div class="bg-white p-3 rounded-4 shadow-sm d-flex align-items-center gap-3">
-                            <img src="${prod.imagen}" alt="${prod.nombre}" style="width: 80px; height: 80px; object-fit: contain;" class="bg-light rounded-3 p-1">
-                            
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-1">${prod.nombre}</h6>
-                                <span class="text-muted small">${prod.precio} c/u</span>
-                            </div>
-
-                            <div class="d-flex align-items-center gap-2">
-                                <button class="btn btn-sm btn-outline-secondary btn-cambiar-cant" data-index="${index}" data-accion="-">-</button>
-                                <span class="fw-bold px-2">${prod.cantidad}</span>
-                                <button class="btn btn-sm btn-outline-secondary btn-cambiar-cant" data-index="${index}" data-accion="+">+</button>
-                            </div>
-
-                            <div class="text-end ms-2">
-                                <div class="fw-bold text-dark">${formatearPrecio(subtotalProducto)}</div>
-                                <button class="btn btn-link text-danger p-0 border-0 btn-eliminar" data-index="${index}">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-
-                    contenedorProductos.innerHTML += itemHTML;
-                });
-
-                if (resumenSubtotal) resumenSubtotal.textContent = formatearPrecio(subtotalTotal);
-                if (resumenTotal) resumenTotal.textContent = formatearPrecio(subtotalTotal);
-
-                asignarEventos();
-            }
-
-            function asignarEventos() {
-                // Cambiar cantidades (+ / -)
-                document.querySelectorAll('.btn-cambiar-cant').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        let index = e.target.getAttribute('data-index');
-                        let accion = e.target.getAttribute('data-accion');
-                        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-                        if (accion === '+') {
-                            carrito[index].cantidad++;
-                        } else if (accion === '-') {
-                            if (carrito[index].cantidad > 1) {
-                                carrito[index].cantidad--;
-                            } else {
-                                carrito.splice(index, 1);
-                            }
-                        }
-
-                        localStorage.setItem('carrito', JSON.stringify(carrito));
-                        renderizarCarrito();
-                    });
-                });
-
-                // Eliminar producto
-                document.querySelectorAll('.btn-eliminar').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        let index = e.target.closest('button').getAttribute('data-index');
-                        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-                        carrito.splice(index, 1);
-                        localStorage.setItem('carrito', JSON.stringify(carrito));
-                        renderizarCarrito();
-                    });
-                });
-            }
-
-            // Vaciar todo el carrito
-            if (btnVaciar) {
-                btnVaciar.addEventListener('click', () => {
-                    if (confirm('¿Estás seguro de que deseas vaciar tu carrito?')) {
-                        localStorage.removeItem('carrito');
-                        renderizarCarrito();
-                    }
-                });
-            }
-
-            renderizarCarrito();
-        });
-    </script>
+    <!-- Gestión compartida del carrito -->
+    <script src="js/carrito.js"></script>
 
 </body>
 

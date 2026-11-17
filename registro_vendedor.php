@@ -32,7 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $pdo->beginTransaction();
-        $rol = $pdo->query("SELECT id_rol FROM roles WHERE nombre = 'vendedor'")->fetchColumn();
+        $rol = $pdo->query("SELECT id_rol FROM roles WHERE LOWER(TRIM(nombre)) = 'vendedor' LIMIT 1")->fetchColumn();
+        if (!$rol) {
+            throw new RuntimeException('No existe el rol vendedor en la tabla roles. Ejecuta la verificación SQL indicada en la documentación del proyecto.');
+        }
         $usuario = $pdo->prepare("INSERT INTO usuarios (id_rol, nombres, apellidos, tipo_documento, numero_documento, correo, celular, password_hash) VALUES (?, ?, ?, 'CC', ?, ?, ?, ?)");
         $usuario->execute([$rol, $nombres, $apellidos, $documento, $correo, $celular, password_hash($password, PASSWORD_DEFAULT)]);
         $idVendedor = (int)$pdo->lastInsertId();
@@ -42,11 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
 
         $_SESSION['flash_success'] = 'Tu cuenta de vendedor fue creada. La tienda queda pendiente de verificación.';
+        // Evita reutilizar una sesión anterior (por ejemplo, la de un comprador).
+        unset($_SESSION['usuario']);
+        session_regenerate_id(true);
         header('Location: login.php');
         exit;
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
-        if ($e->getCode() === '23000') {
+        if ($e instanceof PDOException && $e->getCode() === '23000') {
             redirigir_con_error('El correo o documento ya está registrado.', 'registro_vendedor.php');
         }
         error_log($e->getMessage());
@@ -64,7 +70,7 @@ unset($_SESSION['flash_error']);
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/registro_vendedor.css">
 </head><body class="bg-light">
-<nav class="navbar bg-white shadow-sm"><div class="container"><a class="navbar-brand fw-bold fs-3" href="index.html">COMPRA<span class="text-warning">VENTA</span></a></div></nav>
+<nav class="navbar bg-white shadow-sm"><div class="container"><a class="navbar-brand fw-bold fs-3" href="index.php">COMPRA<span class="text-warning">VENTA</span></a></div></nav>
 <main class="container py-5"><div class="row justify-content-center"><div class="col-lg-8"><div class="card shadow border-0 rounded-4"><div class="card-body p-5">
 <h2 class="text-center mb-4">Registro de vendedor</h2>
 <?php if ($error): ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>

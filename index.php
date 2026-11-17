@@ -1,6 +1,30 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
+if (strtolower(trim((string)($_SESSION['usuario']['rol'] ?? ''))) === 'vendedor') {
+    header('Location: vendedor/index.php');
+    exit;
+}
 $usuarioSesion = $_SESSION['usuario'] ?? null;
+
+// Productos publicados por vendedores: se consultan desde MySQL y no desde tarjetas de demostración.
+$productosPublicadosStmt = $pdo->query("
+    SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.cantidad_disponible,
+           c.nombre AS categoria,
+           t.nombre_tienda,
+           (SELECT pi.ruta_imagen
+              FROM producto_imagenes pi
+             WHERE pi.id_producto = p.id_producto
+             ORDER BY pi.es_principal DESC, pi.orden ASC
+             LIMIT 1) AS imagen
+      FROM productos p
+      INNER JOIN categorias c ON c.id_categoria = p.id_categoria
+      LEFT JOIN tiendas t ON t.id_vendedor = p.id_vendedor
+     WHERE p.estado = 'publicado'
+       AND p.cantidad_disponible > 0
+     ORDER BY p.creado_en DESC
+     LIMIT 8
+");
+$productosPublicados = $productosPublicadosStmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -80,7 +104,9 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
                         <span class="fw-semibold text-dark">
                             ¡Bienvenido, <?= e(explode(' ', trim($usuarioSesion['nombre']))[0]) ?>!
                         </span>
-                        <?php if (($usuarioSesion['rol'] ?? '') === 'administrador'): ?>
+                        <?php if (strtolower(trim((string)($usuarioSesion['rol'] ?? ''))) === 'vendedor'): ?>
+                            <a href="vendedor/index.php" class="btn btn-outline-dark fw-semibold">Panel vendedor</a>
+                        <?php elseif (strtolower(trim((string)($usuarioSesion['rol'] ?? ''))) === 'administrador'): ?>
                             <a href="admin/usuarios.php" class="btn btn-outline-dark fw-semibold">
                                 Panel administrador
                             </a>
@@ -365,7 +391,24 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
     </section>
 
 
-    <!-- ================= SECCIÓN VENDER ================= -->
+    <!-- ============ PUBLICACIONES RECIENTES DE VENDEDORES ============ -->
+    <?php if ($productosPublicados): ?>
+    <section class="products-section bg-light" id="publicaciones-vendedores">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <h2>Productos publicados recientemente</h2>
+                    <p>Artículos reales publicados por nuestros vendedores.</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <?php foreach ($productosPublicados as $productoPublicado):
+                    $imagenPublicada = $productoPublicado['imagen'] ?: 'img/logo.png';
+                    $urlDetalle = 'producto.html?' . http_build_query([
+                        'id_producto' => (int)$productoPublicado['id_producto'],
+                        'nombre' => $productoPublicado['nombre'],
+                        'precio' => '
+    <?php if (!$usuarioSesion): ?>
     <section class="sell-section">
         <div class="container">
             <div class="sell-box">
@@ -382,6 +425,7 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
 
     <!-- ================= FOOTER ================= -->
@@ -422,7 +466,7 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
                     <ul>
                         <li><a href="#">Nosotros</a></li>
                         <li><a href="#">Blog</a></li>
-                        <li><a href="registro_vendedor.php">Vendedores</a></li>
+                        <?php if (!$usuarioSesion): ?><li><a href="elegir_registro.php">Crear cuenta</a></li><?php endif; ?>
                     </ul>
                 </div>
 
@@ -456,6 +500,134 @@ $usuarioSesion = $_SESSION['usuario'] ?? null;
 
     <!-- JS propio -->
     <script src="js/app.js"></script>
+    <script src="js/carrito.js"></script>
+
+</body>
+
+</html> . number_format((float)$productoPublicado['precio'], 0, ',', '.'),
+                        'categoria' => $productoPublicado['categoria'],
+                        'img' => $imagenPublicada,
+                        'desc' => $productoPublicado['descripcion']
+                    ], '', '&', PHP_QUERY_RFC3986);
+                ?>
+                <div class="col-lg-3 col-md-6">
+                    <article class="product-card h-100">
+                        <div class="product-image">
+                            <img src="<?= e($imagenPublicada) ?>" alt="<?= e($productoPublicado['nombre']) ?>" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h5><?= e($productoPublicado['nombre']) ?></h5>
+                            <p class="category"><?= e($productoPublicado['categoria']) ?></p>
+                            <div class="price">$<?= number_format((float)$productoPublicado['precio'], 0, ',', '.') ?></div>
+                            <small class="text-muted d-block mb-2">
+                                <?= e($productoPublicado['nombre_tienda'] ?: 'Vendedor') ?>
+                                · <?= (int)$productoPublicado['cantidad_disponible'] ?> disponibles
+                            </small>
+                            <a href="<?= e($urlDetalle) ?>" class="btn btn-warning w-100">Ver producto</a>
+                        </div>
+                    </article>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+
+    <!-- ================= SECCIÓN VENDER ================= -->
+    <?php if (!$usuarioSesion): ?>
+    <section class="sell-section">
+        <div class="container">
+            <div class="sell-box">
+                <div class="sell-content">
+                    <h2>¿Quieres vender tus artículos?</h2>
+                    <p>Publica gratis tus productos y llega a miles de compradores interesados.</p>
+                    <a href="registro_vendedor.php" class="btn btn-warning btn-lg">
+                        Publicar gratis <i class="bi bi-plus-circle ms-1"></i>
+                    </a>
+                </div>
+                <div class="sell-image">
+                    <i class="bi bi-shop"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- MARCA -->
+                <div class="col-lg-4">
+                    <h3 class="footer-logo">
+                        COMPRA<span>VENTA</span>
+                    </h3>
+                    <p>
+                        El marketplace donde compras y vendes productos de forma fácil, rápida y segura.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- SOPORTE -->
+                <div class="col-lg-2 col-md-4">
+                    <h5>Soporte</h5>
+                    <ul>
+                        <li><a href="#">Centro de ayuda</a></li>
+                        <li><a href="#">Seguridad</a></li>
+                        <li><a href="#">Contacto</a></li>
+                        <li><a href="#">Preguntas frecuentes</a></li>
+                    </ul>
+                </div>
+
+                <!-- EMPRESA -->
+                <div class="col-lg-2 col-md-4">
+                    <h5>Empresa</h5>
+                    <ul>
+                        <li><a href="#">Nosotros</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <?php if (!$usuarioSesion): ?><li><a href="elegir_registro.php">Crear cuenta</a></li><?php endif; ?>
+                    </ul>
+                </div>
+
+                <!-- NEWSLETTER -->
+                <div class="col-lg-4 col-md-4">
+                    <h5>Recibe ofertas</h5>
+                    <p>Suscríbete para recibir promociones y novedades.</p>
+                    <div class="newsletter">
+                        <input type="email" placeholder="Tu correo electrónico">
+                        <button type="button"><i class="bi bi-arrow-right"></i></button>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="mt-5 mb-4 text-secondary">
+
+            <div class="footer-bottom">
+                <p>© 2026 COMPRAVENTA. Todos los derechos reservados por OMT.</p>
+                <div>
+                    <a href="#" class="me-3">Términos</a>
+                    <a href="#">Privacidad</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS propio -->
+    <script src="js/app.js"></script>
+    <script src="js/carrito.js"></script>
 
 </body>
 
