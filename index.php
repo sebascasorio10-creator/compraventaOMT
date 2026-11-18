@@ -25,6 +25,22 @@ $productosPublicadosStmt = $pdo->query("
      LIMIT 8
 ");
 $productosPublicados = $productosPublicadosStmt->fetchAll();
+
+$productosDemostracion = [
+    ['nombre' => 'Smartphone Premium', 'categoria' => 'Tecnología', 'precio' => 899000, 'imagen' => 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Nuevo', 'descripcion' => 'Celular de diseño moderno, pantalla de alta definición, cámara de gran calidad y batería de larga duración.'],
+    ['nombre' => 'Audífonos Bluetooth', 'categoria' => 'Electrónica', 'precio' => 189000, 'imagen' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Oferta', 'descripcion' => 'Audífonos inalámbricos cómodos, con sonido envolvente y estuche de protección.'],
+    ['nombre' => 'Reloj inteligente', 'categoria' => 'Accesorios', 'precio' => 249000, 'imagen' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Popular', 'descripcion' => 'Reloj inteligente con pantalla táctil y funciones para organizar tu día.'],
+    ['nombre' => 'Portátil para trabajo', 'categoria' => 'Computadores', 'precio' => 2499000, 'imagen' => 'https://images.unsplash.com/photo-149 ноут?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Nuevo', 'descripcion' => 'Computador portátil ideal para estudiar, trabajar y disfrutar contenido multimedia.'],
+    ['nombre' => 'Cámara digital', 'categoria' => 'Fotografía', 'precio' => 1799000, 'imagen' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Cámara digital compacta para capturar tus mejores momentos con gran detalle.'],
+    ['nombre' => 'Parlante portátil', 'categoria' => 'Electrónica', 'precio' => 159000, 'imagen' => 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Oferta', 'descripcion' => 'Parlante portátil con sonido potente y diseño fácil de llevar.'],
+    ['nombre' => 'Silla moderna', 'categoria' => 'Hogar y muebles', 'precio' => 389000, 'imagen' => 'https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Silla de estilo moderno para complementar tu espacio de trabajo o estudio.'],
+    ['nombre' => 'Lámpara decorativa', 'categoria' => 'Hogar y muebles', 'precio' => 119000, 'imagen' => 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Lámpara decorativa que aporta iluminación cálida y estilo a tus espacios.'],
+    ['nombre' => 'Tenis deportivos', 'categoria' => 'Moda', 'precio' => 279000, 'imagen' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Popular', 'descripcion' => 'Tenis deportivos cómodos para tus actividades diarias y caminatas.'],
+    ['nombre' => 'Mochila urbana', 'categoria' => 'Accesorios', 'precio' => 139000, 'imagen' => 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Mochila práctica con espacio para tus objetos personales y accesorios.'],
+    ['nombre' => 'Tableta digital', 'categoria' => 'Tecnología', 'precio' => 1099000, 'imagen' => 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Nuevo', 'descripcion' => 'Tableta ligera para estudiar, leer, dibujar y disfrutar entretenimiento.'],
+    ['nombre' => 'Teclado mecánico', 'categoria' => 'Computadores', 'precio' => 219000, 'imagen' => 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Teclado mecánico para mejorar tu experiencia de escritura y juego.'],
+];
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -215,96 +231,45 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
                 <p>Intenta buscar otra palabra.</p>
             </div>
 
-            <!-- GRID DE PRODUCTOS (8 PRODUCTOS CON ENLACES DINÁMICOS) -->
+            <!-- CATÁLOGO DE DEMOSTRACIÓN: no se guarda en MySQL -->
             <div class="row g-4">
-
-                <!-- PRODUCTO 1 -->
+                <?php foreach ($productosDemostracion as $productoDemo):
+                    $parametrosDetalle = [
+                        'nombre' => $productoDemo['nombre'],
+                        'precio' => (string)$productoDemo['precio'],
+                        'categoria' => $productoDemo['categoria'],
+                        'img' => $productoDemo['imagen'],
+                        'desc' => $productoDemo['descripcion']
+                    ];
+                    $enlaceDetalle = 'producto.php?' . http_build_query($parametrosDetalle, '', '&', PHP_QUERY_RFC3986);
+                    $busqueda = $productoDemo['nombre'] . ' ' . $productoDemo['categoria'];
+                ?>
                 <div class="col-lg-3 col-md-6">
-                    <div class="product-card producto" data-nombre="smartphone premium huawei celular tecnologia">
+                    <article class="product-card producto h-100" data-nombre="<?= e(mb_strtolower($busqueda, 'UTF-8')) ?>">
                         <div class="product-image">
-                            <span class="tag new">Nuevo</span>
-                            <img src="img/huaweipura.png" alt="Smartphone Premium">
-                            <button class="favorite" type="button" aria-label="Guardar en favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
+                            <?php if ($productoDemo['etiqueta'] !== ''): ?>
+                                <span class="tag <?= $productoDemo['etiqueta'] === 'Oferta' ? 'sale' : ($productoDemo['etiqueta'] === 'Popular' ? 'best' : 'new') ?>"><?= e($productoDemo['etiqueta']) ?></span>
+                            <?php endif; ?>
+                            <img src="<?= e($productoDemo['imagen']) ?>" alt="<?= e($productoDemo['nombre']) ?>" loading="lazy" onerror="this.onerror=null;this.src='img/logo.png';">
+                            <button class="favorite" type="button" aria-label="Guardar en favoritos"><i class="bi bi-heart"></i></button>
                         </div>
                         <div class="product-info">
-                            <h5>Smartphone Premium</h5>
-                            <p class="category">Tecnología</p>
-                            <div class="price">$899.000</div>
-                            <a href="producto.php?nombre=Smartphone%20Premium&precio=$899.000&categoria=Tecnología&img=img/huaweipura.png&desc=Disfruta%20de%20la%20última%20tecnología%20móvil%20con%20pantalla%20de%20alta%20definición,%20cámara%20profesional%20de%20múltiples%20lentes%20y%20batería%20de%20larga%20duración."
-                                class="btn btn-warning w-100 mb-2">Ver producto</a>
-                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Smartphone Premium" data-product-price="899000" data-product-image="img/huaweipura.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PRODUCTO 2 -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card producto" data-nombre="audifonos inalambricos bluetooth electronica">
-                        <div class="product-image">
-                            <span class="tag sale">Oferta</span>
-                            <img src="img/audifonos_inalambricos.png" alt="Audífonos inalámbricos">
-                            <button class="favorite" type="button" aria-label="Guardar en favoritos">
-                                <i class="bi bi-heart"></i>
+                            <h5><?= e($productoDemo['nombre']) ?></h5>
+                            <p class="category"><?= e($productoDemo['categoria']) ?></p>
+                            <div class="price">$<?= number_format((int)$productoDemo['precio'], 0, ',', '.') ?></div>
+                            <a href="<?= e($enlaceDetalle) ?>" class="btn btn-warning w-100 mb-2">Ver producto</a>
+                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto"
+                                data-product-id=""
+                                data-product-name="<?= e($productoDemo['nombre']) ?>"
+                                data-product-price="<?= (int)$productoDemo['precio'] ?>"
+                                data-product-image="<?= e($productoDemo['imagen']) ?>">
+                                <i class="bi bi-cart-plus me-1"></i>Añadir al carrito
                             </button>
                         </div>
-                        <div class="product-info">
-                            <h5>Audífonos inalámbricos</h5>
-                            <p class="category">Electrónica</p>
-                            <div class="price">$120.000</div>
-                            <a href="producto.php?nombre=Audífonos%20inalámbricos&precio=$120.000&categoria=Electrónica&img=img/audifonos_inalambricos.png&desc=Cancelación%20de%20ruido%20activa,%20conexión%20Bluetooth%205.3%20de%20baja%20latencia%20y%20hasta%2024%20horas%20de%20reproducción%20continua%20con%20estuche%20de%20carga."
-                                class="btn btn-warning w-100 mb-2">Ver producto</a>
-                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Audífonos inalámbricos" data-product-price="120000" data-product-image="img/audifonos_inalambricos.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
-                        </div>
-                    </div>
+                    </article>
                 </div>
-
-                <!-- PRODUCTO 3 -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card producto" data-nombre="reloj inteligente smartwatch accesorios">
-                        <div class="product-image">
-                            <span class="tag best">Más vendido</span>
-                            <img src="img/reloj_inteligente.png" alt="Reloj inteligente">
-                            <button class="favorite" type="button" aria-label="Guardar en favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </div>
-                        <div class="product-info">
-                            <h5>Reloj inteligente</h5>
-                            <p class="category">Accesorios</p>
-                            <div class="price">$250.000</div>
-                            <a href="producto.php?nombre=Reloj%20inteligente&precio=$250.000&categoria=Accesorios&img=img/reloj_inteligente.png&desc=Monitoreo%20de%20ritmo%20cardíaco,%20seguimiento%20del%20sueño,%20GPS%20integrado%20y%20resistencia%20al%20agua.%20Compatible%20con%20Android%20y%20iOS."
-                                class="btn btn-warning w-100 mb-2">Ver producto</a>
-                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Reloj inteligente" data-product-price="250000" data-product-image="img/reloj_inteligente.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PRODUCTO 4 -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card producto" data-nombre="laptop portatil hp computador tecnologia">
-                        <div class="product-image">
-                            <span class="tag new">Nuevo</span>
-                            <img src="img/portatilhp.png" alt="Laptop profesional">
-                            <button class="favorite" type="button" aria-label="Guardar en favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </div>
-                        <div class="product-info">
-                            <h5>Laptop profesional</h5>
-                            <p class="category">Computadores</p>
-                            <div class="price">$2.500.000</div>
-                            <a href="producto.php?nombre=Laptop%20profesional&precio=$2.500.000&categoria=Computadores&img=img/portatilhp.png&desc=Procesador%20de%20última%20generación,%2016GB%20RAM%20y%20SSD%20ultrarrápido.%20Ideal%20para%20trabajo%20pesado,%20diseño%20y%20multitarea."
-                                class="btn btn-warning w-100 mb-2">Ver producto</a>
-                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto" data-product-id="" data-product-name="Laptop profesional" data-product-price="2500000" data-product-image="img/portatilhp.png"><i class="bi bi-cart-plus me-1"></i>Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-
-
+                <?php endforeach; ?>
             </div>
-
         </div>
     </section>
 
