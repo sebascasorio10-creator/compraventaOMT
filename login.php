@@ -35,7 +35,7 @@ $success = $_SESSION['flash_success'] ?? '';
 unset($_SESSION['flash_error'], $_SESSION['flash_success']);
 ?>
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Iniciar sesión | CompraVenta</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="css/login.css"></head><body>
-<header class="navbar"><a href="index.php" class="logo"><img src="img/logo.png" alt="Logo original CompraVenta OMT" style="width:190px;height:50px;object-fit:contain;"></a><nav><a href="index.php">Inicio</a><a href="index.html#productos">Productos</a></nav></header>
+<header class="navbar"><a href="index.php" class="logo"><img src="img/logo-omt.svg" alt="CompraVenta OMT" style="width:190px;height:50px;object-fit:contain;"></a><nav><a href="index.php">Inicio</a><a href="index.html#productos">Productos</a></nav></header>
 <section class="login-container"><div class="login-card"><h2>Bienvenido</h2><p>Inicia sesión para continuar</p>
 <?php if ($error): ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?><?php if ($success): ?><div class="alert alert-success"><?= e($success) ?></div><?php endif; ?>
 <form method="POST" action="login.php"><input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
