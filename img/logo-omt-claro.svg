@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 112" role="img" aria-labelledby="title desc">
-<title id="title">CompraVenta OMT</title><desc id="desc">Identidad de CompraVenta OMT en dorado y blanco</desc>
-<defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe59a"/><stop offset=".52" stop-color="#d6a928"/><stop offset="1" stop-color="#a87916"/></linearGradient></defs>
-<g transform="translate(8 8)"><path d="M48 2 87 24v45L48 91 9 69V24Z" fill="none" stroke="url(#gold)" stroke-width="5"/><path d="M25 57V34l23 14 23-14v23M25 34l23-14 23 14" fill="none" stroke="url(#gold)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="69" r="4" fill="#f4cf68"/></g>
-<text x="112" y="57" fill="#fffaf0" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="800" letter-spacing="1.2">COMPRA</text><text x="294" y="57" fill="url(#gold)" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="800" letter-spacing="1.2">VENTA</text>
-<text x="114" y="88" fill="#e5c66f" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="700" letter-spacing="8">O M T  ·  MARKETPLACE</text>
-</svg>
