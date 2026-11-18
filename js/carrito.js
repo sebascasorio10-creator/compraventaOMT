@@ -438,6 +438,7 @@
         window.addEventListener('carrito:actualizado', renderizarCarrito);
     }
 
+    window.OMTNotificar = notificar;
     window.CarritoOMT = { obtener, agregar, guardar, actualizarContador, formatoPrecio };
 
     if (document.readyState === 'loading') {
