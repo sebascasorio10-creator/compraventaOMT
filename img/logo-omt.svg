@@ -1,7 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 112" role="img" aria-labelledby="title desc">
-<title id="title">CompraVenta OMT</title><desc id="desc">Logo de CompraVenta OMT en dorado y negro</desc>
-<defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4d77d"/><stop offset=".55" stop-color="#d6a928"/><stop offset="1" stop-color="#98721b"/></linearGradient></defs>
-<g transform="translate(8 8)"><path d="M48 2 87 24v45L48 91 9 69V24Z" fill="none" stroke="url(#gold)" stroke-width="5"/><path d="M25 57V34l23 14 23-14v23M25 34l23-14 23 14" fill="none" stroke="url(#gold)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="69" r="4" fill="#d6a928"/></g>
-<text x="112" y="57" fill="#211d14" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="800" letter-spacing="1.2">COMPRA</text><text x="294" y="57" fill="url(#gold)" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="800" letter-spacing="1.2">VENTA</text>
-<text x="114" y="88" fill="#92701e" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="700" letter-spacing="8">O M T  ·  MARKETPLACE</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 112" role="img" aria-labelledby="title desc">
+<title id="title">CompraVenta OMT</title><desc id="desc">Identidad de CompraVenta OMT, un mercado digital colombiano.</desc>
+<g transform="translate(8 8)">
+  <rect x="0" y="0" width="96" height="96" rx="25" fill="#FFC107"/>
+  <path d="M25 39h46l-4 39H29z" fill="#111111"/>
+  <path d="M36 40v-8a12 12 0 0 1 24 0v8" fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <path d="M35 56h26" stroke="#FFC107" stroke-width="5" stroke-linecap="round"/>
+  <path d="m53 49 8 7-8 7" fill="none" stroke="#FFC107" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="37" cy="69" r="3" fill="#FFC107"/><circle cx="63" cy="69" r="3" fill="#FFC107"/>
+</g>
+<text x="122" y="54" font-family="Inter,Arial,sans-serif" font-size="38" font-weight="800" letter-spacing="-1.8" fill="#111111">Compra<tspan fill="#D99B00">Venta</tspan></text>
+<text x="124" y="81" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="4.4" fill="#6C757D">OMT · MARKETPLACE</text>
 </svg>
