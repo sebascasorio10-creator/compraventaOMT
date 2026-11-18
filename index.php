@@ -68,12 +68,13 @@ $productosNuevosDemo = [
 
     <!-- CSS propio -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar-transparente.css">
 </head>
 
 <body>
 
     <!-- ================= NAVBAR ================= -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm omt-transparent-navbar">
         <div class="container">
 
             <!-- LOGO A LA IZQUIERDA -->
@@ -94,13 +95,13 @@ $productosNuevosDemo = [
                         <a class="nav-link active" href="index.php">Inicio</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="#descuentos">Descuentos</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#productos">Productos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#novedades">Novedades</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#descuentos">Descuentos</a>
                     </li>
                 </ul>
 
