@@ -1,0 +1,105 @@
+/* Barra superior transparente sobre la imagen principal del carrusel */
+.navbar.omt-transparent-navbar {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, .16) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+}
+
+.navbar.omt-transparent-navbar .nav-link,
+.navbar.omt-transparent-navbar .cart-icon,
+.navbar.omt-transparent-navbar .fw-semibold {
+    color: #fff !important;
+}
+
+.navbar.omt-transparent-navbar .nav-link:hover,
+.navbar.omt-transparent-navbar .nav-link.active {
+    color: #f0c85a !important;
+}
+
+.navbar.omt-transparent-navbar .nav-link::after {
+    background: #f0c85a;
+}
+
+.navbar.omt-transparent-navbar .search-box input {
+    color: #fff;
+    background: rgba(255, 255, 255, .13);
+    border-color: rgba(255, 255, 255, .55);
+}
+
+.navbar.omt-transparent-navbar .search-box input::placeholder {
+    color: rgba(255, 255, 255, .88);
+}
+
+.navbar.omt-transparent-navbar .search-box input:focus {
+    background: rgba(255, 255, 255, .2);
+    border-color: #f0c85a;
+    box-shadow: 0 0 0 .2rem rgba(240, 200, 90, .18);
+}
+
+.navbar.omt-transparent-navbar .omt-nav-auth-btn {
+    color: #fff !important;
+    background: rgba(255, 255, 255, .08) !important;
+    border: 1px solid rgba(255, 255, 255, .8) !important;
+    box-shadow: none !important;
+}
+
+.navbar.omt-transparent-navbar .omt-nav-auth-btn:hover {
+    color: #17130a !important;
+    background: #f0c85a !important;
+    border-color: #f0c85a !important;
+}
+
+.navbar.omt-transparent-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, .75);
+}
+
+.navbar.omt-transparent-navbar .navbar-toggler-icon {
+    filter: invert(1) grayscale(1);
+}
+
+/* El carrusel comienza detrás de la barra, sin perder espacio para su contenido */
+.hero-section {
+    height: 530px;
+    min-height: 530px;
+    margin-top: 0 !important;
+    padding-top: 80px;
+    box-sizing: border-box;
+}
+
+.hero-overlay {
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, .62) 0%,
+        rgba(0, 0, 0, .42) 32%,
+        rgba(0, 0, 0, .25) 100%
+    );
+}
+
+@media (max-width: 991px) {
+    .navbar.omt-transparent-navbar .navbar-collapse {
+        margin-top: 8px;
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, .18);
+        border-radius: 14px;
+        background: rgba(20, 19, 16, .94);
+        backdrop-filter: blur(12px);
+    }
+
+    .navbar.omt-transparent-navbar .search-box {
+        margin: 10px 0 !important;
+    }
+
+    .hero-section {
+        height: 560px;
+        min-height: 560px;
+        padding-top: 80px;
+    }
+}
+
+@media (max-width: 575px) {
+    .hero-section {
+        height: 620px;
+        min-height: 620px;
+    }
+}
