@@ -22,7 +22,7 @@ $productosPublicadosStmt = $pdo->query("
      WHERE p.estado = 'publicado'
        AND p.cantidad_disponible > 0
      ORDER BY p.creado_en DESC
-     LIMIT 8
+     LIMIT 12
 ");
 $productosPublicados = $productosPublicadosStmt->fetchAll();
 
@@ -39,6 +39,15 @@ $productosDemostracion = [
     ['nombre' => 'Mochila urbana', 'categoria' => 'Accesorios', 'precio' => 139000, 'imagen' => 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Mochila práctica con espacio para tus objetos personales y accesorios.'],
     ['nombre' => 'Tableta digital', 'categoria' => 'Tecnología', 'precio' => 1099000, 'imagen' => 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Nuevo', 'descripcion' => 'Tableta ligera para estudiar, leer, dibujar y disfrutar entretenimiento.'],
     ['nombre' => 'Teclado mecánico', 'categoria' => 'Computadores', 'precio' => 219000, 'imagen' => 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Teclado mecánico para mejorar tu experiencia de escritura y juego.'],
+];
+
+$productosNuevosDemo = [
+    ['nombre' => 'Consola de videojuegos', 'categoria' => 'Tecnología', 'precio' => 1899000, 'imagen' => 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=900&q=85', 'descripcion' => 'Consola para disfrutar juegos y entretenimiento en casa.'],
+    ['nombre' => 'Silla gamer ergonómica', 'categoria' => 'Hogar y muebles', 'precio' => 649000, 'imagen' => 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?auto=format&fit=crop&w=900&q=85', 'descripcion' => 'Silla cómoda con diseño deportivo para largas jornadas.'],
+    ['nombre' => 'Mouse inalámbrico', 'categoria' => 'Computadores', 'precio' => 89000, 'imagen' => 'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=900&q=85', 'descripcion' => 'Mouse inalámbrico compacto para estudio y trabajo.'],
+    ['nombre' => 'Cámara instantánea', 'categoria' => 'Fotografía', 'precio' => 459000, 'imagen' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=85', 'descripcion' => 'Cámara instantánea para conservar recuerdos especiales.'],
+    ['nombre' => 'Bolso urbano', 'categoria' => 'Moda', 'precio' => 169000, 'imagen' => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=85', 'descripcion' => 'Bolso versátil para acompañarte todos los días.'],
+    ['nombre' => 'Bicicleta urbana', 'categoria' => 'Otros', 'precio' => 799000, 'imagen' => 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=900&q=85', 'descripcion' => 'Bicicleta para recorridos urbanos y paseos al aire libre.'],
 ];
 
 ?>
@@ -275,6 +284,56 @@ $productosDemostracion = [
 
 
 
+
+    <!-- ================= NOVEDADES DE DEMOSTRACIÓN ================= -->
+    <section class="products-section recent-demo-section" id="novedades">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <span class="eyebrow"><i class="bi bi-clock-history"></i> Recién llegados</span>
+                    <h2>Novedades para descubrir</h2>
+                    <p>Más productos de ejemplo para explorar la variedad de CompraVenta OMT.</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <?php foreach ($productosNuevosDemo as $productoNuevo):
+                    $paramsNuevo = [
+                        'nombre' => $productoNuevo['nombre'],
+                        'precio' => (string)$productoNuevo['precio'],
+                        'categoria' => $productoNuevo['categoria'],
+                        'img' => $productoNuevo['imagen'],
+                        'desc' => $productoNuevo['descripcion']
+                    ];
+                    $urlNuevo = 'producto.php?' . http_build_query($paramsNuevo, '', '&', PHP_QUERY_RFC3986);
+                ?>
+                <div class="col-lg-4 col-md-6">
+                    <article class="product-card producto h-100" data-nombre="<?= e(strtolower($productoNuevo['nombre'] . ' ' . $productoNuevo['categoria'])) ?>">
+                        <div class="product-image">
+                            <span class="tag new">Recién publicado</span>
+                            <img src="<?= e($productoNuevo['imagen']) ?>" alt="<?= e($productoNuevo['nombre']) ?>" loading="lazy" onerror="this.onerror=null;this.src='img/logo.png';">
+                            <button class="favorite" type="button" aria-label="Guardar en favoritos"><i class="bi bi-heart"></i></button>
+                        </div>
+                        <div class="product-info">
+                            <h5><?= e($productoNuevo['nombre']) ?></h5>
+                            <p class="category"><?= e($productoNuevo['categoria']) ?></p>
+                            <div class="price">$<?= number_format((int)$productoNuevo['precio'], 0, ',', '.') ?></div>
+                            <a href="<?= e($urlNuevo) ?>" class="btn btn-warning w-100 mb-2">Ver producto</a>
+                            <button type="button" class="btn btn-outline-dark w-100 btn-add-producto"
+                                data-product-id=""
+                                data-product-name="<?= e($productoNuevo['nombre']) ?>"
+                                data-product-price="<?= (int)$productoNuevo['precio'] ?>"
+                                data-product-image="<?= e($productoNuevo['imagen']) ?>">
+                                <i class="bi bi-cart-plus me-1"></i>Añadir al carrito
+                            </button>
+                        </div>
+                    </article>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <p class="text-muted small mt-3">Catálogo de demostración: estos artículos no son publicaciones reales de vendedores.</p>
+        </div>
+    </section>
+
     <!-- ================= DESCUENTOS ================= -->
     <section class="discounts-section" id="descuentos">
         <div class="container">
@@ -341,8 +400,8 @@ $productosDemostracion = [
         <div class="container">
             <div class="section-header">
                 <div>
-                    <h2>Productos publicados recientemente</h2>
-                    <p>Artículos reales publicados por nuestros vendedores.</p>
+                    <h2>Últimas publicaciones de vendedores</h2>
+                    <p>Los productos reales más recientes, ordenados por fecha de publicación.</p>
                 </div>
             </div>
             <div class="row g-4">
@@ -353,6 +412,7 @@ $productosDemostracion = [
                 <div class="col-lg-3 col-md-6">
                     <article class="product-card h-100">
                         <div class="product-image">
+                            <span class="tag new">Publicado</span>
                             <img src="<?= e($imagenPublicada) ?>" alt="<?= e($productoPublicado['nombre']) ?>" loading="lazy">
                         </div>
                         <div class="product-info">
