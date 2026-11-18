@@ -88,6 +88,9 @@ favorites.forEach(button => {
       icon.classList.toggle("bi-heart-fill");
     }
     button.classList.toggle("liked");
+    if (window.OMTNotificar) {
+      window.OMTNotificar(button.classList.contains("liked") ? "Producto guardado en favoritos." : "Producto eliminado de favoritos.", "info");
+    }
   });
 });
 
