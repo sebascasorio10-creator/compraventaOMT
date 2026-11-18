@@ -28,11 +28,11 @@ $productosPublicados = $productosPublicadosStmt->fetchAll();
 
 $productosDemostracion = [
     ['nombre' => 'Smartphone Premium', 'categoria' => 'Tecnología', 'precio' => 899000, 'imagen' => 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Nuevo', 'descripcion' => 'Celular de diseño moderno, pantalla de alta definición, cámara de gran calidad y batería de larga duración.'],
-    ['nombre' => 'Audífonos Bluetooth', 'categoria' => 'Electrónica', 'precio' => 189000, 'imagen' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Oferta', 'descripcion' => 'Audífonos inalámbricos cómodos, con sonido envolvente y estuche de protección.'],
-    ['nombre' => 'Reloj inteligente', 'categoria' => 'Accesorios', 'precio' => 249000, 'imagen' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Popular', 'descripcion' => 'Reloj inteligente con pantalla táctil y funciones para organizar tu día.'],
+    ['nombre' => 'Audífonos Bluetooth', 'categoria' => 'Electrónica', 'precio' => 189000, 'precio_anterior' => 229000, 'imagen' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Oferta', 'descripcion' => 'Audífonos inalámbricos cómodos, con sonido envolvente y estuche de protección.'],
+    ['nombre' => 'Reloj inteligente', 'categoria' => 'Accesorios', 'precio' => 249000, 'precio_anterior' => 279000, 'imagen' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Popular', 'descripcion' => 'Reloj inteligente con pantalla táctil y funciones para organizar tu día.'],
     ['nombre' => 'Portátil para trabajo', 'categoria' => 'Computadores', 'precio' => 2499000, 'imagen' => 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Nuevo', 'descripcion' => 'Computador portátil ideal para estudiar, trabajar y disfrutar contenido multimedia.'],
     ['nombre' => 'Cámara digital', 'categoria' => 'Fotografía', 'precio' => 1799000, 'imagen' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Cámara digital compacta para capturar tus mejores momentos con gran detalle.'],
-    ['nombre' => 'Parlante portátil', 'categoria' => 'Electrónica', 'precio' => 159000, 'imagen' => 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Oferta', 'descripcion' => 'Parlante portátil con sonido potente y diseño fácil de llevar.'],
+    ['nombre' => 'Parlante portátil', 'categoria' => 'Electrónica', 'precio' => 159000, 'precio_anterior' => 189000, 'imagen' => 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Oferta', 'descripcion' => 'Parlante portátil con sonido potente y diseño fácil de llevar.'],
     ['nombre' => 'Silla moderna', 'categoria' => 'Hogar y muebles', 'precio' => 389000, 'imagen' => 'https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Silla de estilo moderno para complementar tu espacio de trabajo o estudio.'],
     ['nombre' => 'Lámpara decorativa', 'categoria' => 'Hogar y muebles', 'precio' => 119000, 'imagen' => 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=85', 'etiqueta' => '', 'descripcion' => 'Lámpara decorativa que aporta iluminación cálida y estilo a tus espacios.'],
     ['nombre' => 'Tenis deportivos', 'categoria' => 'Moda', 'precio' => 279000, 'imagen' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85', 'etiqueta' => 'Popular', 'descripcion' => 'Tenis deportivos cómodos para tus actividades diarias y caminatas.'],
@@ -273,6 +273,67 @@ $productosDemostracion = [
         </div>
     </section>
 
+
+
+    <!-- ================= DESCUENTOS ================= -->
+    <section class="discounts-section" id="descuentos">
+        <div class="container">
+            <div class="discounts-heading">
+                <div>
+                    <span class="eyebrow"><i class="bi bi-stars"></i> Oportunidades especiales</span>
+                    <h2>Descuentos de la semana</h2>
+                    <p>Encuentra productos seleccionados a un precio especial por tiempo limitado.</p>
+                </div>
+                <span class="discounts-mark"><i class="bi bi-tag-fill"></i> Ofertas destacadas</span>
+            </div>
+            <div class="row g-4">
+                <?php foreach ($productosDemostracion as $productoOferta):
+                    $precioAnterior = (int)($productoOferta['precio_anterior'] ?? 0);
+                    $precioActual = (int)$productoOferta['precio'];
+                    if ($precioAnterior <= $precioActual) continue;
+                    $porcentajeDescuento = (int)round((1 - ($precioActual / $precioAnterior)) * 100);
+                    $parametrosOferta = [
+                        'nombre' => $productoOferta['nombre'],
+                        'precio' => (string)$precioActual,
+                        'categoria' => $productoOferta['categoria'],
+                        'img' => $productoOferta['imagen'],
+                        'desc' => $productoOferta['descripcion']
+                    ];
+                    $enlaceOferta = 'producto.php?' . http_build_query($parametrosOferta, '', '&', PHP_QUERY_RFC3986);
+                ?>
+                <div class="col-lg-4 col-md-6">
+                    <article class="offer-card h-100">
+                        <div class="offer-image">
+                            <span class="tag sale">-<?= $porcentajeDescuento ?>%</span>
+                            <img src="<?= e($productoOferta['imagen']) ?>" alt="<?= e($productoOferta['nombre']) ?>" loading="lazy" onerror="this.onerror=null;this.src='img/logo.png';">
+                        </div>
+                        <div class="offer-info">
+                            <span class="offer-kicker">Precio especial</span>
+                            <h3><?= e($productoOferta['nombre']) ?></h3>
+                            <p><?= e($productoOferta['categoria']) ?></p>
+                            <div class="offer-prices">
+                                <span class="old-price">$<?= number_format($precioAnterior, 0, ',', '.') ?></span>
+                                <strong>$<?= number_format($precioActual, 0, ',', '.') ?></strong>
+                                <span class="save-label">Ahorras $<?= number_format($precioAnterior - $precioActual, 0, ',', '.') ?></span>
+                            </div>
+                            <div class="offer-actions">
+                                <a href="<?= e($enlaceOferta) ?>" class="btn btn-warning">Ver oferta <i class="bi bi-arrow-right"></i></a>
+                                <button type="button" class="btn btn-outline-dark btn-add-producto"
+                                    data-product-id=""
+                                    data-product-name="<?= e($productoOferta['nombre']) ?>"
+                                    data-product-price="<?= $precioActual ?>"
+                                    data-product-image="<?= e($productoOferta['imagen']) ?>">
+                                    <i class="bi bi-cart-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <p class="discounts-note"><i class="bi bi-info-circle"></i> Estas ofertas son parte del catálogo de demostración.</p>
+        </div>
+    </section>
 
     <!-- ============ PUBLICACIONES RECIENTES DE VENDEDORES ============ -->
     <?php if ($productosPublicados): ?>
