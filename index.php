@@ -79,7 +79,8 @@ $productosNuevosDemo = [
 
             <!-- LOGO A LA IZQUIERDA -->
             <a class="navbar-brand" href="index.php">
-                <img src="img/logo.png" alt="Logo original CompraVenta OMT" class="logo-navbar">
+                <img src="img/logo-omt.svg" alt="Símbolo CompraVenta OMT" class="logo-navbar">
+                <span class="omt-brand-name">Compra<span>Venta</span> OMT</span>
             </a>
 
             <!-- BOTÓN MOBILE -->
