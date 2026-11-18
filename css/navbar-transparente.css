@@ -1,15 +1,70 @@
-/* Barra superior transparente sobre la imagen principal del carrusel */
+/* =========================================================
+   NAVBAR OMT
+   Conserva el logo original img/logo.png.
+   Transparente sobre el carrusel y legible sobre cualquier fondo.
+========================================================= */
+
 .navbar.omt-transparent-navbar {
-    background: transparent !important;
+    min-height: 78px;
+    padding: 8px 0;
+    background: rgba(17, 17, 17, .58) !important;
     border-bottom: 1px solid rgba(255, 255, 255, .16) !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .10) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1030;
 }
 
-.navbar.omt-transparent-navbar .nav-link,
-.navbar.omt-transparent-navbar .cart-icon,
-.navbar.omt-transparent-navbar .fw-semibold {
+.navbar.omt-transparent-navbar > .container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 14px;
+}
+
+.navbar.omt-transparent-navbar .navbar-brand {
+    flex: 0 0 auto;
+    margin-right: 4px;
+    padding: 0;
+}
+
+.navbar.omt-transparent-navbar .logo-navbar {
+    display: block;
+    width: 132px;
+    height: 58px;
+    object-fit: contain;
+    background: transparent !important;
+    border: 0;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.navbar.omt-transparent-navbar .navbar-collapse {
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.navbar.omt-transparent-navbar .navbar-nav {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 3px;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap;
+}
+
+.navbar.omt-transparent-navbar .nav-link {
+    position: relative;
+    padding: 9px 10px;
+    margin: 0;
     color: #fff !important;
+    font-size: .91rem;
+    font-weight: 600;
+    transition: color .2s ease;
 }
 
 .navbar.omt-transparent-navbar .nav-link:hover,
@@ -18,13 +73,37 @@
 }
 
 .navbar.omt-transparent-navbar .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 3px;
+    height: 2px;
     background: #f0c85a;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .2s ease;
+}
+
+.navbar.omt-transparent-navbar .nav-link:hover::after,
+.navbar.omt-transparent-navbar .nav-link.active::after {
+    transform: scaleX(1);
+}
+
+.navbar.omt-transparent-navbar .search-box {
+    flex: 0 1 205px;
+    min-width: 150px;
+    margin: 0 2px !important;
 }
 
 .navbar.omt-transparent-navbar .search-box input {
+    min-width: 0;
+    height: 38px;
     color: #fff;
     background: rgba(255, 255, 255, .13);
-    border-color: rgba(255, 255, 255, .55);
+    border: 1px solid rgba(255, 255, 255, .55);
+    border-radius: 20px 0 0 20px;
+    font-size: .85rem;
 }
 
 .navbar.omt-transparent-navbar .search-box input::placeholder {
@@ -34,36 +113,83 @@
 .navbar.omt-transparent-navbar .search-box input:focus {
     background: rgba(255, 255, 255, .2);
     border-color: #f0c85a;
-    box-shadow: 0 0 0 .2rem rgba(240, 200, 90, .18);
+    box-shadow: 0 0 0 .16rem rgba(240, 200, 90, .18);
 }
 
-.navbar.omt-transparent-navbar .omt-nav-auth-btn {
+.navbar.omt-transparent-navbar .search-box button {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 38px;
+    padding: 0;
+    border-radius: 0 20px 20px 0;
+}
+
+.navbar.omt-transparent-navbar .cart-icon {
+    flex: 0 0 auto;
+    margin: 0 2px !important;
+    color: #fff !important;
+    font-size: 22px;
+}
+
+.navbar.omt-transparent-navbar .navbar-collapse > .d-flex {
+    flex: 0 0 auto;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    gap: 7px !important;
+    white-space: nowrap;
+}
+
+.navbar.omt-transparent-navbar .navbar-collapse > .d-flex .fw-semibold {
+    color: #fff !important;
+    font-size: .84rem;
+    white-space: nowrap;
+}
+
+.navbar.omt-transparent-navbar .omt-nav-auth-btn,
+.navbar.omt-transparent-navbar .navbar-collapse > .d-flex .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 7px 11px;
+    border-radius: 8px;
     color: #fff !important;
     background: rgba(255, 255, 255, .08) !important;
-    border: 1px solid rgba(255, 255, 255, .8) !important;
+    border: 1px solid rgba(255, 255, 255, .72) !important;
     box-shadow: none !important;
+    font-size: .82rem;
+    line-height: 1.1;
+    white-space: nowrap;
 }
 
-.navbar.omt-transparent-navbar .omt-nav-auth-btn:hover {
+.navbar.omt-transparent-navbar .omt-nav-auth-btn:hover,
+.navbar.omt-transparent-navbar .navbar-collapse > .d-flex .btn:hover {
     color: #17130a !important;
     background: #f0c85a !important;
     border-color: #f0c85a !important;
 }
 
 .navbar.omt-transparent-navbar .navbar-toggler {
+    flex: 0 0 auto;
     border-color: rgba(255, 255, 255, .75);
+    padding: 6px 9px;
+}
+
+.navbar.omt-transparent-navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 .18rem rgba(240, 200, 90, .25);
 }
 
 .navbar.omt-transparent-navbar .navbar-toggler-icon {
     filter: invert(1) grayscale(1);
 }
 
-/* El carrusel comienza detrás de la barra, sin perder espacio para su contenido */
+/* El carrusel pasa por detrás de la barra sin tapar el contenido principal. */
 .hero-section {
     height: 530px;
     min-height: 530px;
     margin-top: 0 !important;
-    padding-top: 80px;
+    padding-top: 78px;
     box-sizing: border-box;
 }
 
@@ -76,30 +202,117 @@
     );
 }
 
-@media (max-width: 991px) {
+/* Portátiles: reducimos espacios para que todo siga en una sola fila. */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .navbar.omt-transparent-navbar > .container {
+        gap: 8px;
+    }
+
+    .navbar.omt-transparent-navbar .logo-navbar {
+        width: 112px;
+    }
+
     .navbar.omt-transparent-navbar .navbar-collapse {
-        margin-top: 8px;
-        padding: 14px;
-        border: 1px solid rgba(255, 255, 255, .18);
-        border-radius: 14px;
-        background: rgba(20, 19, 16, .94);
-        backdrop-filter: blur(12px);
+        gap: 8px;
+    }
+
+    .navbar.omt-transparent-navbar .nav-link {
+        padding-left: 7px;
+        padding-right: 7px;
+        font-size: .84rem;
     }
 
     .navbar.omt-transparent-navbar .search-box {
-        margin: 10px 0 !important;
+        flex-basis: 170px;
+        min-width: 130px;
+    }
+
+    .navbar.omt-transparent-navbar .omt-nav-auth-btn,
+    .navbar.omt-transparent-navbar .navbar-collapse > .d-flex .btn {
+        padding-left: 8px;
+        padding-right: 8px;
+        font-size: .76rem;
+    }
+}
+
+/* Menú desplegable para tabletas y celulares. */
+@media (max-width: 991.98px) {
+    .navbar.omt-transparent-navbar {
+        min-height: 72px;
+    }
+
+    .navbar.omt-transparent-navbar > .container {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .navbar.omt-transparent-navbar .logo-navbar {
+        width: 125px;
+        height: 54px;
+    }
+
+    .navbar.omt-transparent-navbar .navbar-collapse {
+        flex: 0 0 100%;
+        width: 100%;
+        margin-top: 8px;
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, .18);
+        border-radius: 13px;
+        background: rgba(17, 17, 17, .96);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, .2);
+        backdrop-filter: blur(12px);
+    }
+
+    .navbar.omt-transparent-navbar .navbar-nav {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 8px !important;
+    }
+
+    .navbar.omt-transparent-navbar .nav-link {
+        padding: 9px 8px;
+    }
+
+    .navbar.omt-transparent-navbar .search-box {
+        width: 100%;
+        max-width: 100%;
+        margin: 8px 0 12px !important;
+    }
+
+    .navbar.omt-transparent-navbar .cart-icon {
+        display: inline-block;
+        margin: 4px 0 12px !important;
+    }
+
+    .navbar.omt-transparent-navbar .navbar-collapse > .d-flex {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap !important;
+        white-space: normal;
+    }
+
+    .navbar.omt-transparent-navbar .navbar-collapse > .d-flex .fw-semibold {
+        flex-basis: 100%;
     }
 
     .hero-section {
         height: 560px;
         min-height: 560px;
-        padding-top: 80px;
+        padding-top: 72px;
     }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 575.98px) {
     .hero-section {
         height: 620px;
         min-height: 620px;
+    }
+
+    .navbar.omt-transparent-navbar .omt-nav-auth-btn,
+    .navbar.omt-transparent-navbar .navbar-collapse > .d-flex .btn {
+        min-height: 36px;
+        padding: 7px 10px;
+        font-size: .8rem;
     }
 }
