@@ -756,3 +756,48 @@ body { color: #292720; background: #fff; }
     .logo-navbar { width: 150px; height: 60px; }
     .omt-toast-zone { top: 82px; right: 16px; }
 }
+
+
+/* Ajustes finales de identidad OMT: logo vectorial y accesos compactos */
+.logo-navbar {
+    display: block;
+    width: 198px;
+    height: 62px;
+    max-width: 100%;
+    object-fit: contain;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+.omt-auth-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 8px !important;
+    white-space: nowrap;
+}
+.omt-auth-actions .omt-nav-auth-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 7px 13px !important;
+    border-radius: 8px;
+    font-size: .88rem;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+.omt-auth-actions .btn {
+    white-space: nowrap;
+}
+@media (max-width: 991px) {
+    .logo-navbar { width: 178px; height: 56px; }
+    .omt-auth-actions { justify-content: flex-start; flex-wrap: wrap !important; }
+}
+@media (max-width: 575px) {
+    .logo-navbar { width: 154px; height: 50px; }
+    .omt-auth-actions .omt-nav-auth-btn { min-height: 36px; padding: 7px 11px !important; }
+}
