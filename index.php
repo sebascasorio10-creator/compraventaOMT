@@ -143,10 +143,10 @@ $productosNuevosDemo = [
                     </div>
                 <?php else: ?>
                     <div class="d-flex gap-2">
-                        <a href="login.php" class="btn btn-warning fw-semibold">
+                        <a href="login.php" class="btn fw-semibold omt-nav-auth-btn">
                             Iniciar sesión
                         </a>
-                        <a href="elegir_registro.php" class="btn btn-warning fw-semibold">
+                        <a href="elegir_registro.php" class="btn fw-semibold omt-nav-auth-btn">
                             Registrarse
                         </a>
                     </div>
