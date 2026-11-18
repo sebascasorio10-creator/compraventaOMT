@@ -245,7 +245,7 @@ $productosDemostracion = [
                     $busqueda = $productoDemo['nombre'] . ' ' . $productoDemo['categoria'];
                 ?>
                 <div class="col-lg-3 col-md-6">
-                    <article class="product-card producto h-100" data-nombre="<?= e(mb_strtolower($busqueda, 'UTF-8')) ?>">
+                    <article class="product-card producto h-100" data-nombre="<?= e(strtolower($busqueda)) ?>">
                         <div class="product-image">
                             <?php if ($productoDemo['etiqueta'] !== ''): ?>
                                 <span class="tag <?= $productoDemo['etiqueta'] === 'Oferta' ? 'sale' : ($productoDemo['etiqueta'] === 'Popular' ? 'best' : 'new') ?>"><?= e($productoDemo['etiqueta']) ?></span>
