@@ -682,3 +682,77 @@ body { color: #292720; background: #fff; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
 }
+
+
+/* Logo transparente y notificaciones elegantes */
+.logo-navbar {
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    width: 190px;
+    height: 70px;
+    object-fit: contain;
+}
+.omt-toast-zone {
+    position: fixed;
+    top: 96px;
+    right: 22px;
+    z-index: 2000;
+    display: grid;
+    gap: 10px;
+    width: min(370px, calc(100vw - 32px));
+    pointer-events: none;
+}
+.omt-toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 16px;
+    border-radius: 13px;
+    background: rgba(255,255,255,.97);
+    color: #28251d;
+    border: 1px solid #eee7d6;
+    border-left: 4px solid #c59a2c;
+    box-shadow: 0 14px 38px rgba(25,22,14,.16);
+    font-size: .92rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(18px) translateY(-5px);
+    transition: opacity .25s ease, transform .25s ease;
+    pointer-events: auto;
+}
+.omt-toast-visible { opacity: 1; transform: translateX(0) translateY(0); }
+.omt-toast > i { color: #a47b1d; font-size: 1.2rem; flex: 0 0 auto; }
+.omt-toast-error { border-left-color: #ad4b40; }
+.omt-toast-error > i { color: #ad4b40; }
+.omt-toast-info { border-left-color: #77796e; }
+.omt-toast-info > i { color: #77796e; }
+.omt-toast-close {
+    margin-left: auto; border: 0; background: transparent;
+    color: #8b877d; font-size: 1.25rem; line-height: 1; cursor: pointer;
+}
+.omt-confirm-backdrop {
+    position: fixed; inset: 0; z-index: 2100;
+    display: grid; place-items: center; padding: 20px;
+    background: rgba(20,18,13,.48); backdrop-filter: blur(4px);
+    animation: omtFadeUp .18s ease both;
+}
+.omt-confirm-dialog {
+    width: min(420px,100%); padding: 30px;
+    border-radius: 19px; background: #fff;
+    box-shadow: 0 24px 70px rgba(0,0,0,.24); text-align: center;
+}
+.omt-confirm-icon {
+    width: 54px; height: 54px; margin: 0 auto 15px;
+    display: grid; place-items: center; border-radius: 50%;
+    color: #967018; background: #fbf4df; font-size: 1.35rem;
+}
+.omt-confirm-dialog h3 { font-size: 1.22rem; font-weight: 800; margin-bottom: 9px; }
+.omt-confirm-dialog p { color: #777267; line-height: 1.5; margin-bottom: 22px; }
+.omt-confirm-actions { display:flex; justify-content:center; gap:10px; }
+.omt-confirm-actions .btn { min-width: 120px; border-radius: 9px; font-weight: 700; }
+@media (max-width: 575px) {
+    .logo-navbar { width: 150px; height: 60px; }
+    .omt-toast-zone { top: 82px; right: 16px; }
+}
