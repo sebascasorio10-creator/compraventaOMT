@@ -9,6 +9,91 @@
 
     const STORAGE_KEY = 'carrito';
 
+    let temporizadorToast = null;
+
+    function notificar(mensaje, tipo = 'success') {
+        let zona = document.getElementById('omt-toast-zone');
+        if (!zona) {
+            zona = document.createElement('div');
+            zona.id = 'omt-toast-zone';
+            zona.className = 'omt-toast-zone';
+            zona.setAttribute('aria-live', 'polite');
+            zona.setAttribute('aria-atomic', 'true');
+            document.body.appendChild(zona);
+        }
+
+        const iconos = {
+            success: 'bi-check-circle-fill',
+            error: 'bi-exclamation-circle-fill',
+            info: 'bi-info-circle-fill'
+        };
+        const toast = document.createElement('div');
+        toast.className = 'omt-toast omt-toast-' + (iconos[tipo] ? tipo : 'info');
+        const icono = document.createElement('i');
+        icono.className = 'bi ' + (iconos[tipo] || iconos.info);
+        const texto = document.createElement('span');
+        texto.textContent = mensaje;
+        const cerrar = document.createElement('button');
+        cerrar.type = 'button';
+        cerrar.className = 'omt-toast-close';
+        cerrar.setAttribute('aria-label', 'Cerrar notificación');
+        cerrar.innerHTML = '&times;';
+        cerrar.addEventListener('click', () => toast.remove());
+        toast.append(icono, texto, cerrar);
+        zona.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('omt-toast-visible'));
+        window.setTimeout(() => {
+            toast.classList.remove('omt-toast-visible');
+            window.setTimeout(() => toast.remove(), 250);
+        }, 3400);
+    }
+
+    function confirmarAccion(mensaje, titulo = 'Confirmar acción') {
+        return new Promise(resolve => {
+            const fondo = document.createElement('div');
+            fondo.className = 'omt-confirm-backdrop';
+            const dialogo = document.createElement('section');
+            dialogo.className = 'omt-confirm-dialog';
+            dialogo.setAttribute('role', 'dialog');
+            dialogo.setAttribute('aria-modal', 'true');
+            dialogo.setAttribute('aria-labelledby', 'omt-confirm-title');
+
+            const icono = document.createElement('div');
+            icono.className = 'omt-confirm-icon';
+            icono.innerHTML = '<i class="bi bi-question-lg"></i>';
+            const encabezado = document.createElement('h3');
+            encabezado.id = 'omt-confirm-title';
+            encabezado.textContent = titulo;
+            const detalle = document.createElement('p');
+            detalle.textContent = mensaje;
+            const acciones = document.createElement('div');
+            acciones.className = 'omt-confirm-actions';
+            const cancelar = document.createElement('button');
+            cancelar.type = 'button';
+            cancelar.className = 'btn btn-light';
+            cancelar.textContent = 'Cancelar';
+            const aceptar = document.createElement('button');
+            aceptar.type = 'button';
+            aceptar.className = 'btn btn-warning';
+            aceptar.textContent = 'Sí, continuar';
+
+            const terminar = valor => {
+                fondo.remove();
+                resolve(valor);
+            };
+            cancelar.addEventListener('click', () => terminar(false));
+            aceptar.addEventListener('click', () => terminar(true));
+            fondo.addEventListener('click', evento => {
+                if (evento.target === fondo) terminar(false);
+            });
+            acciones.append(cancelar, aceptar);
+            dialogo.append(icono, encabezado, detalle, acciones);
+            fondo.appendChild(dialogo);
+            document.body.appendChild(fondo);
+            aceptar.focus();
+        });
+    }
+
     function leerLista(valor) {
         try {
             const datos = JSON.parse(valor || '[]');
@@ -120,7 +205,7 @@
     function agregar(producto, cantidad = 1) {
         const nuevo = normalizarProducto({ ...producto, cantidad });
         if (!nuevo) {
-            alert('No fue posible agregar este producto. Verifica sus datos.');
+            notificar('No fue posible agregar este producto. Verifica sus datos.', 'error');
             return;
         }
 
@@ -253,7 +338,7 @@
                     botonRapido.innerHTML = textoOriginal;
                     botonRapido.disabled = false;
                 }, 1200);
-                alert('¡' + producto.nombre + ' se agregó al carrito!');
+                notificar(producto.nombre + ' se agregó al carrito.');
             }
         });
 
@@ -295,7 +380,7 @@
                 }, cantidadSolicitada);
 
                 if (producto) {
-                    alert('¡Se agregó ' + producto.cantidad + ' unidad(es) de "' + producto.nombre + '" al carrito!');
+                    notificar(producto.cantidad + ' unidad(es) de ' + producto.nombre + ' agregadas al carrito.');
                 }
             });
         }
@@ -317,10 +402,14 @@
                     break;
                 case 'restar':
                     carrito[indice].cantidad -= 1;
-                    if (carrito[indice].cantidad <= 0) carrito.splice(indice, 1);
+                    if (carrito[indice].cantidad <= 0) {
+                        carrito.splice(indice, 1);
+                        notificar('Producto retirado del carrito.', 'info');
+                    }
                     break;
                 case 'eliminar':
                     carrito.splice(indice, 1);
+                    notificar('Producto eliminado del carrito.', 'info');
                     break;
                 default:
                     return;
@@ -330,16 +419,17 @@
             renderizarCarrito();
         });
 
-        document.getElementById('btn-vaciar-carrito')?.addEventListener('click', () => {
+        document.getElementById('btn-vaciar-carrito')?.addEventListener('click', async () => {
             if (obtener().length === 0) return;
-            if (confirm('¿Estás seguro de que deseas vaciar tu carrito?')) {
+            if (await confirmarAccion('Se eliminarán todos los productos que tienes guardados.', '¿Vaciar el carrito?')) {
                 guardar([]);
                 renderizarCarrito();
+                notificar('Tu carrito quedó vacío.', 'info');
             }
         });
 
         document.getElementById('btn-finalizar-compra')?.addEventListener('click', () => {
-            alert('Tu carrito está guardado. El proceso de pago todavía no está habilitado en esta versión.');
+            notificar('Tu carrito está guardado. El proceso de pago aún no está habilitado.', 'info');
         });
 
         window.addEventListener('storage', evento => {
