@@ -97,6 +97,9 @@ $productosNuevosDemo = [
                         <a class="nav-link" href="#productos">Productos</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="#novedades">Novedades</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#descuentos">Descuentos</a>
                     </li>
                 </ul>
