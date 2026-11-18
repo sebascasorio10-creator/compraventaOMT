@@ -79,7 +79,7 @@ $productosNuevosDemo = [
 
             <!-- LOGO A LA IZQUIERDA -->
             <a class="navbar-brand" href="index.php">
-                <img src="img/logo.png" alt="Logo original CompraVenta OMT" class="logo-navbar">
+                <img src="img/logo-omt-claro.svg" alt="CompraVenta OMT" class="logo-navbar">
             </a>
 
             <!-- BOTÓN MOBILE -->
@@ -126,7 +126,7 @@ $productosNuevosDemo = [
 
                 <!-- BOTONES DE AUTENTICACIÓN -->
                 <?php if ($usuarioSesion): ?>
-                    <div class="d-flex align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2 omt-auth-actions">
                         <span class="fw-semibold text-dark">
                             ¡Bienvenido, <?= e(explode(' ', trim($usuarioSesion['nombre']))[0]) ?>!
                         </span>
@@ -142,7 +142,7 @@ $productosNuevosDemo = [
                         </a>
                     </div>
                 <?php else: ?>
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 omt-auth-actions">
                         <a href="login.php" class="btn fw-semibold omt-nav-auth-btn">
                             Iniciar sesión
                         </a>
@@ -541,6 +541,15 @@ $productosNuevosDemo = [
     <script src="js/app.js"></script>
     <script src="js/carrito.js"></script>
 
+<script>
+(() => {
+    const navbar = document.querySelector('.omt-transparent-navbar');
+    if (!navbar) return;
+    const actualizarNavbar = () => navbar.classList.toggle('omt-navbar-scrolled', window.scrollY > 24);
+    actualizarNavbar();
+    window.addEventListener('scroll', actualizarNavbar, { passive: true });
+})();
+</script>
 </body>
 
 </html>
