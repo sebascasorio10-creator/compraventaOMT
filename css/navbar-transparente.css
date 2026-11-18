@@ -316,3 +316,22 @@
         font-size: .8rem;
     }
 }
+
+
+/* Logo: símbolo sin recuadro y nombre de la empresa al lado. */
+.navbar.omt-transparent-navbar .logo-navbar {
+    width: 48px;
+    height: 48px;
+}
+
+.navbar.omt-transparent-navbar .omt-brand-name {
+    color: #fff;
+    font-size: 1.12rem;
+    font-weight: 800;
+    letter-spacing: -.6px;
+    white-space: nowrap;
+}
+
+.navbar.omt-transparent-navbar .omt-brand-name span {
+    color: #f0c85a;
+}
