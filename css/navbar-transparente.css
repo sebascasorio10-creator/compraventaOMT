@@ -316,3 +316,262 @@
         font-size: .8rem;
     }
 }
+
+
+/* Logo: símbolo sin recuadro y nombre de la empresa al lado. */
+.navbar.omt-transparent-navbar .logo-navbar {
+    width: 48px;
+    height: 48px;
+}
+
+.navbar.omt-transparent-navbar .omt-brand-name {
+    color: #fff;
+    font-size: 1.12rem;
+    font-weight: 800;
+    letter-spacing: -.6px;
+    white-space: nowrap;
+}
+
+.navbar.omt-transparent-navbar .omt-brand-name span {
+    color: #f0c85a;
+}
+
+
+/* =========================================================
+   HERO PRINCIPAL OMT — REDISEÑO PREMIUM
+   Solo afecta el banner de inicio.
+========================================================= */
+.hero-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 590px;
+    min-height: 590px;
+    padding-top: 78px;
+    margin-top: 0 !important;
+    background-position: center 46%;
+    background-size: cover;
+    isolation: isolate;
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 78% 48%, rgba(214,169,40,.13), transparent 38%),
+        linear-gradient(90deg, rgba(10,10,9,.88) 0%, rgba(10,10,9,.70) 43%, rgba(10,10,9,.22) 100%);
+}
+
+.hero-section .hero-overlay {
+    z-index: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,.24), transparent 42%);
+}
+
+.hero-section .hero-content {
+    z-index: 2;
+    align-items: center;
+    padding-top: 12px;
+    padding-bottom: 42px;
+}
+
+.hero-section .hero-card {
+    width: min(100%, 650px);
+    max-width: 650px;
+    padding: 38px 42px 40px;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(18,18,16,.82), rgba(18,18,16,.56));
+    border: 1px solid rgba(232,197,105,.30);
+    border-left: 4px solid #d6a928;
+    border-radius: 4px 18px 18px 4px;
+    box-shadow: 0 22px 65px rgba(0,0,0,.30);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+}
+
+.hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 19px;
+    color: #e9c86f;
+    font-size: .76rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.hero-eyebrow i {
+    font-size: 1rem;
+}
+
+.hero-section .hero-card h1 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.55rem, 5vw, 4.25rem);
+    font-weight: 850;
+    line-height: 1.06;
+    letter-spacing: -2.2px;
+}
+
+.hero-section .hero-card h1 span {
+    color: #e5bd55;
+}
+
+.hero-section .hero-card p {
+    max-width: 510px;
+    margin: 22px 0 27px;
+    color: rgba(255,255,255,.86);
+    font-size: 1.04rem;
+    line-height: 1.75;
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.hero-section .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 13px 23px;
+    border: 0;
+    border-radius: 8px;
+    font-size: .96rem;
+    box-shadow: 0 9px 24px rgba(214,169,40,.22);
+}
+
+.hero-section .hero-cta i {
+    transition: transform .2s ease;
+}
+
+.hero-section .hero-cta:hover i {
+    transform: translateX(4px);
+}
+
+.hero-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,.78);
+    font-size: .82rem;
+}
+
+.hero-note i {
+    color: #e5bd55;
+    font-size: 1rem;
+}
+
+.hero-section .hero-control {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    color: #fff;
+    background: rgba(15,15,14,.45);
+    border: 1px solid rgba(255,255,255,.42);
+    backdrop-filter: blur(6px);
+    transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.hero-section .hero-control:hover {
+    color: #17130a;
+    background: #e5bd55;
+    border-color: #e5bd55;
+}
+
+.hero-section .slider-dots {
+    bottom: 22px;
+}
+
+.hero-section .slider-dots .dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255,255,255,.65);
+}
+
+.hero-section .slider-dots .dot.active {
+    width: 27px;
+    background: #e5bd55;
+}
+
+@media (max-width: 767.98px) {
+    .hero-section {
+        height: auto;
+        min-height: 570px;
+        padding-top: 72px;
+        background-position: 58% center;
+    }
+
+    .hero-section::before {
+        background:
+            linear-gradient(90deg, rgba(10,10,9,.82), rgba(10,10,9,.48)),
+            linear-gradient(0deg, rgba(0,0,0,.38), transparent 60%);
+    }
+
+    .hero-section .hero-content {
+        min-height: 498px;
+        padding: 38px 18px 62px;
+    }
+
+    .hero-section .hero-card {
+        padding: 29px 24px 31px;
+        border-radius: 4px 14px 14px 4px;
+    }
+
+    .hero-eyebrow {
+        margin-bottom: 15px;
+        font-size: .68rem;
+        letter-spacing: 1.5px;
+    }
+
+    .hero-section .hero-card h1 {
+        font-size: clamp(2.25rem, 9vw, 3.2rem);
+        letter-spacing: -1.4px;
+    }
+
+    .hero-section .hero-card p {
+        margin: 17px 0 22px;
+        font-size: .94rem;
+        line-height: 1.65;
+    }
+
+    .hero-actions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    .hero-section .hero-cta {
+        min-height: 49px;
+        padding: 12px 18px;
+        font-size: .9rem;
+    }
+
+    .hero-section .hero-control {
+        width: 36px;
+        height: 36px;
+        top: auto;
+        bottom: 18px;
+        transform: none;
+    }
+
+    .hero-section .hero-control.left { left: 18px; }
+    .hero-section .hero-control.right { right: 18px; }
+
+    .hero-section .slider-dots {
+        bottom: 30px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-section .hero-cta i,
+    .hero-section .hero-control {
+        transition: none;
+    }
+}
