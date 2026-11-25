@@ -158,56 +158,79 @@ $productosNuevosDemo = [
     </nav>
 
 
-    <!-- ================= HERO / CARRUSEL ================= -->
-    <section class="hero-section" aria-label="Bienvenida a CompraVenta OMT">
-
+    <!-- ================= HERO / BANNER ANIMADO ================= -->
+    <section class="hero-section hero-animated" aria-label="Ofertas y novedades de CompraVenta OMT">
         <div class="hero-overlay"></div>
+        <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
 
         <div class="container hero-content">
-            <div class="hero-card">
+            <div class="hero-copy">
                 <span class="hero-eyebrow">
                     <i class="bi bi-stars" aria-hidden="true"></i>
-                    COMPRA • VENDE • DESCUBRE
+                    <span data-hero-kicker>COMPRA • VENDE • DESCUBRE</span>
                 </span>
 
-                <h1>
+                <h1 class="hero-title">
                     Todo lo que buscas,<br>
-                    <span>en un solo lugar.</span>
+                    <span data-hero-highlight>en un solo lugar.</span>
                 </h1>
 
-                <p>
+                <p class="hero-description" data-hero-description>
                     Encuentra productos para tu día a día, descubre buenas oportunidades
                     y compra de forma fácil en CompraVenta OMT.
                 </p>
 
                 <div class="hero-actions">
                     <a href="#productos" class="btn btn-warning btn-lg fw-bold hero-cta">
-                        Explorar productos <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        Explorar productos <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
                     </a>
-                    <span class="hero-note">
-                        <i class="bi bi-bag-check" aria-hidden="true"></i>
-                        Nuevas oportunidades te esperan
-                    </span>
+                    <a href="registro_vendedor.php" class="hero-secondary-link">
+                        Quiero vender <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <div class="hero-trust-row">
+                    <span><i class="bi bi-check-circle-fill"></i> Fácil de explorar</span>
+                    <span><i class="bi bi-lightning-charge-fill"></i> Nuevas oportunidades</span>
+                </div>
+            </div>
+
+            <div class="hero-showcase" aria-hidden="true">
+                <div class="hero-orbit orbit-one"></div>
+                <div class="hero-orbit orbit-two"></div>
+                <div class="hero-floating-tag tag-top">
+                    <i class="bi bi-lightning-charge-fill"></i> Oportunidades
+                </div>
+                <div class="hero-feature-card">
+                    <div class="hero-feature-icon"><i class="bi bi-bag-heart-fill"></i></div>
+                    <span class="hero-feature-label">TU MARKETPLACE</span>
+                    <strong>Descubre algo<br>que te encante.</strong>
+                    <div class="hero-feature-line"><span></span></div>
+                    <small>Compra y vende a tu manera</small>
+                </div>
+                <div class="hero-floating-tag tag-bottom">
+                    <i class="bi bi-stars"></i> Siempre hay algo nuevo
                 </div>
             </div>
         </div>
 
-        <!-- FLECHAS SLIDER -->
-        <button class="hero-control left" type="button" aria-label="Anterior">
-            <i class="bi bi-chevron-left"></i>
-        </button>
-
-        <button class="hero-control right" type="button" aria-label="Siguiente">
-            <i class="bi bi-chevron-right"></i>
-        </button>
-
-        <!-- PUNTOS SLIDER -->
-        <div class="slider-dots" aria-label="Navegación del carrusel">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+        <div class="hero-bottom-bar">
+            <div class="hero-slide-count"><span data-hero-current>01</span><i></i>03</div>
+            <div class="slider-dots" aria-label="Seleccionar banner">
+                <button class="dot active" type="button" aria-label="Ver banner 1" aria-pressed="true"></button>
+                <button class="dot" type="button" aria-label="Ver banner 2" aria-pressed="false"></button>
+                <button class="dot" type="button" aria-label="Ver banner 3" aria-pressed="false"></button>
+            </div>
+            <div class="hero-controls">
+                <button class="hero-control left" type="button" aria-label="Banner anterior">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <button class="hero-control right" type="button" aria-label="Banner siguiente">
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
         </div>
-
     </section>
 
 
