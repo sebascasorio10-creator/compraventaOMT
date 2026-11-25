@@ -3,6 +3,9 @@ require_once __DIR__ . '/includes/bootstrap.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     validar_csrf();
+    if (!entorno_local()) {
+        redirigir_con_error('La verificación de correo aún está habilitada solo para pruebas en localhost. Configura SMTP antes de habilitar registros públicos.', 'registro_comprador.php');
+    }
     $nombres = trim($_POST['nombres'] ?? '');
     $apellidos = trim($_POST['apellidos'] ?? '');
     $correo = strtolower(trim($_POST['correo'] ?? ''));
@@ -17,16 +20,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        $pdo->beginTransaction();
         $rol = $pdo->query("SELECT id_rol FROM roles WHERE LOWER(TRIM(nombre)) = 'comprador' LIMIT 1")->fetchColumn();
         if (!$rol) {
             throw new RuntimeException('No existe el rol comprador en la tabla roles.');
         }
-        $stmt = $pdo->prepare('INSERT INTO usuarios (id_rol, nombres, apellidos, correo, password_hash) VALUES (?, ?, ?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO usuarios (id_rol, nombres, apellidos, correo, password_hash, correo_verificado) VALUES (?, ?, ?, ?, ?, 0)');
         $stmt->execute([(int)$rol, $nombres, $apellidos, $correo, password_hash($password, PASSWORD_DEFAULT)]);
-        $_SESSION['flash_success'] = 'Tu cuenta de comprador fue creada. Ya puedes iniciar sesión.';
-        header('Location: login.php');
+        $idComprador = (int)$pdo->lastInsertId();
+        $codigo = crear_codigo_verificacion($pdo, $idComprador);
+        $pdo->commit();
+
+        unset($_SESSION['usuario']);
+        session_regenerate_id(true);
+        $_SESSION['pending_verification_user_id'] = $idComprador;
+        $_SESSION['pending_verification_email'] = $correo;
+        $_SESSION['verification_test_code'] = $codigo;
+        header('Location: verificar_correo.php');
         exit;
     } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         if ($e instanceof PDOException && $e->getCode() === '23000') {
             redirigir_con_error('Ese correo ya está registrado.', 'registro_comprador.php');
         }
