@@ -159,27 +159,36 @@ $productosNuevosDemo = [
 
 
     <!-- ================= HERO / CARRUSEL ================= -->
-    <section class="hero-section">
+    <section class="hero-section" aria-label="Bienvenida a CompraVenta OMT">
 
         <div class="hero-overlay"></div>
 
         <div class="container hero-content">
             <div class="hero-card">
-                <span class="badge bg-warning text-dark mb-3">
-                    Bodega Virtual & Envíos Seguros
+                <span class="hero-eyebrow">
+                    <i class="bi bi-stars" aria-hidden="true"></i>
+                    COMPRA • VENDE • DESCUBRE
                 </span>
 
                 <h1>
-                    Compra y vende <br> productos increíbles
+                    Todo lo que buscas,<br>
+                    <span>en un solo lugar.</span>
                 </h1>
 
                 <p>
-                    Encuentra ofertas únicas con la mejor garantía de almacenamiento y logística en Colombia.
+                    Encuentra productos para tu día a día, descubre buenas oportunidades
+                    y compra de forma fácil en CompraVenta OMT.
                 </p>
 
-                <a href="#productos" class="btn btn-warning btn-lg fw-bold">
-                    Explorar Bodega <i class="bi bi-arrow-right"></i>
-                </a>
+                <div class="hero-actions">
+                    <a href="#productos" class="btn btn-warning btn-lg fw-bold hero-cta">
+                        Explorar productos <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                    <span class="hero-note">
+                        <i class="bi bi-bag-check" aria-hidden="true"></i>
+                        Nuevas oportunidades te esperan
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -193,7 +202,7 @@ $productosNuevosDemo = [
         </button>
 
         <!-- PUNTOS SLIDER -->
-        <div class="slider-dots">
+        <div class="slider-dots" aria-label="Navegación del carrusel">
             <span class="dot active"></span>
             <span class="dot"></span>
             <span class="dot"></span>
