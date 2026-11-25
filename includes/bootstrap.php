@@ -39,7 +39,9 @@ function validar_csrf(): void {
 function entorno_local(): bool {
     $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
     $host = preg_replace('/:\\d+$/', '', $host);
-    return in_array($host, ['localhost', '127.0.0.1'], true);
+    $remoto = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+    return in_array($host, ['localhost', '127.0.0.1'], true)
+        && in_array($remoto, ['127.0.0.1', '::1'], true);
 }
 
 /**
