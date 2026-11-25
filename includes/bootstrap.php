@@ -32,6 +32,39 @@ function validar_csrf(): void {
     }
 }
 
+/**
+ * La entrega del código está en modo de pruebas local hasta configurar SMTP.
+ * Nunca se muestra el código en un dominio público.
+ */
+function entorno_local(): bool {
+    $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
+    $host = preg_replace('/:\\d+$/', '', $host);
+    return in_array($host, ['localhost', '127.0.0.1'], true);
+}
+
+/**
+ * Genera un código de seis dígitos. En la base de datos solo se guarda su hash.
+ */
+function crear_codigo_verificacion(PDO $pdo, int $idUsuario): string {
+    $codigo = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    $hash = password_hash($codigo, PASSWORD_DEFAULT);
+
+    $stmt = $pdo->prepare(
+        'INSERT INTO verificaciones_correo
+            (id_usuario, codigo_hash, expira_en, intentos, ultimo_envio_en, usado_en)
+         VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE), 0, NOW(), NULL)
+         ON DUPLICATE KEY UPDATE
+            codigo_hash = VALUES(codigo_hash),
+            expira_en = DATE_ADD(NOW(), INTERVAL 10 MINUTE),
+            intentos = 0,
+            ultimo_envio_en = NOW(),
+            usado_en = NULL'
+    );
+    $stmt->execute([$idUsuario, $hash]);
+
+    return $codigo;
+}
+
 function redirigir_con_error(string $mensaje, string $destino): void {
     $_SESSION['flash_error'] = $mensaje;
     header('Location: ' . $destino);
