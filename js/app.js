@@ -3,76 +3,102 @@
 // ===============================
 
 // ===============================
-// CARRUSEL HERO
+// CARRUSEL HERO ANIMADO
 // ===============================
+(() => {
+  const hero = document.querySelector(".hero-section");
+  if (!hero) return;
 
-// Usamos imágenes válidas para que no se ponga en negro al pasar el tiempo
-const heroImages = [
-  "img/almacen_confianza.jpg",
-  "img/garantia_confianza.jpg",
-  "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80"
-];
-
-let currentSlide = 0;
-
-const heroSection = document.querySelector(".hero-section");
-const dots = document.querySelectorAll(".slider-dots .dot, .slider-dots span");
-
-function changeSlide(index) {
-  currentSlide = index;
-
-  if (heroSection) {
-    heroSection.style.backgroundImage = `url('${heroImages[currentSlide]}')`;
-  }
-
-  dots.forEach(dot => {
-    dot.classList.remove("active");
-  });
-
-  if (dots[currentSlide]) {
-    dots[currentSlide].classList.add("active");
-  }
-}
-
-// Botón siguiente
-const nextButton = document.querySelector(".hero-control.right");
-if (nextButton) {
-  nextButton.addEventListener("click", () => {
-    currentSlide++;
-    if (currentSlide >= heroImages.length) {
-      currentSlide = 0;
+  const slides = [
+    {
+      image: "img/almacen_confianza.jpg",
+      kicker: "COMPRA • VENDE • DESCUBRE",
+      title: "Todo lo que buscas,",
+      highlight: "en un solo lugar.",
+      description: "Encuentra productos para tu día a día, descubre buenas oportunidades y compra de forma fácil en CompraVenta OMT."
+    },
+    {
+      image: "img/garantia_confianza.jpg",
+      kicker: "TU PRÓXIMO HALLAZGO TE ESPERA",
+      title: "Buenas oportunidades",
+      highlight: "a un clic de distancia.",
+      description: "Explora diferentes productos, compara lo que te gusta y encuentra eso que estabas buscando."
+    },
+    {
+      image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1800&q=85",
+      kicker: "HAZ CRECER TUS IDEAS",
+      title: "Vende lo que tienes,",
+      highlight: "llega a más personas.",
+      description: "Publica tus artículos y conecta con compradores que buscan nuevas opciones."
     }
-    changeSlide(currentSlide);
-  });
-}
+  ];
 
-// Botón anterior
-const prevButton = document.querySelector(".hero-control.left");
-if (prevButton) {
-  prevButton.addEventListener("click", () => {
-    currentSlide--;
-    if (currentSlide < 0) {
-      currentSlide = heroImages.length - 1;
-    }
-    changeSlide(currentSlide);
-  });
-}
+  const dots = Array.from(hero.querySelectorAll(".slider-dots .dot"));
+  const title = hero.querySelector(".hero-title");
+  const highlight = hero.querySelector("[data-hero-highlight]");
+  const kicker = hero.querySelector("[data-hero-kicker]");
+  const description = hero.querySelector("[data-hero-description]");
+  const counter = hero.querySelector("[data-hero-current]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+  let timer = null;
 
-// Puntos del slider
-dots.forEach((dot, index) => {
-  dot.addEventListener("click", () => {
-    changeSlide(index);
-  });
-});
+  function showSlide(index) {
+    current = (index + slides.length) % slides.length;
+    const slide = slides[current];
 
-// Cambio automático cada 5 segundos
-setInterval(() => {
-  currentSlide++;
-  if (currentSlide >= heroImages.length) {
-    currentSlide = 0;
+    hero.classList.add("is-changing");
+    hero.style.setProperty("--hero-image", `url("${slide.image}")`);
+    title.firstChild.textContent = slide.title;
+    highlight.textContent = slide.highlight;
+    kicker.textContent = slide.kicker;
+    description.textContent = slide.description;
+    if (counter) counter.textContent = String(current + 1).padStart(2, "0");
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("active", i === current);
+      dot.setAttribute("aria-pressed", i === current ? "true" : "false");
+    });
+
+    window.setTimeout(() => hero.classList.remove("is-changing"), reduceMotion ? 0 : 650);
   }
-  changeSlide(currentSlide);
-}, 5000);
+
+  function stopAutoplay() {
+    if (timer) window.clearInterval(timer);
+    timer = null;
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+    if (!reduceMotion && !document.hidden) {
+      timer = window.setInterval(() => showSlide(current + 1), 5500);
+    }
+  }
+
+  hero.querySelector(".hero-control.right")?.addEventListener("click", () => {
+    showSlide(current + 1);
+    startAutoplay();
+  });
+
+  hero.querySelector(".hero-control.left")?.addEventListener("click", () => {
+    showSlide(current - 1);
+    startAutoplay();
+  });
+
+  dots.forEach((dot, index) => dot.addEventListener("click", () => {
+    showSlide(index);
+    startAutoplay();
+  }));
+
+  hero.addEventListener("mouseenter", stopAutoplay);
+  hero.addEventListener("mouseleave", startAutoplay);
+  hero.addEventListener("focusin", stopAutoplay);
+  hero.addEventListener("focusout", startAutoplay);
+  document.addEventListener("visibilitychange", () => document.hidden ? stopAutoplay() : startAutoplay());
+
+  showSlide(0);
+  startAutoplay();
+})();
 
 // ===============================
 // FAVORITOS PRODUCTOS
