@@ -3,6 +3,9 @@ require_once __DIR__ . '/includes/bootstrap.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     validar_csrf();
+    if (!entorno_local()) {
+        redirigir_con_error('La verificación de correo aún está habilitada solo para pruebas en localhost. Configura SMTP antes de habilitar registros públicos.', 'registro_vendedor.php');
+    }
     $nombreCompleto = preg_replace('/\s+/', ' ', trim($_POST['nombre_completo'] ?? ''));
     $partes = explode(' ', $nombreCompleto, 2);
     $nombres = $partes[0] ?? '';
@@ -36,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$rol) {
             throw new RuntimeException('No existe el rol vendedor en la tabla roles. Ejecuta la verificación SQL indicada en la documentación del proyecto.');
         }
-        $usuario = $pdo->prepare("INSERT INTO usuarios (id_rol, nombres, apellidos, tipo_documento, numero_documento, correo, celular, password_hash) VALUES (?, ?, ?, 'CC', ?, ?, ?, ?)");
+        $usuario = $pdo->prepare("INSERT INTO usuarios (id_rol, nombres, apellidos, tipo_documento, numero_documento, correo, celular, password_hash, correo_verificado) VALUES (?, ?, ?, 'CC', ?, ?, ?, ?, 0)");
         $usuario->execute([$rol, $nombres, $apellidos, $documento, $correo, $celular, password_hash($password, PASSWORD_DEFAULT)]);
         $idVendedor = (int)$pdo->lastInsertId();
 
