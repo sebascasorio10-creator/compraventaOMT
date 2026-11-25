@@ -120,7 +120,7 @@ $codigoPrueba = $_SESSION['verification_test_code'] ?? '';
       <div class="card border-0 shadow rounded-4">
         <div class="card-body p-4 p-md-5">
           <h2 class="text-center mb-2">Verifica tu correo</h2>
-          <p class="text-center text-muted mb-4">Enviamos un código de prueba para <strong><?= e($usuarioPendiente['correo']) ?></strong>.</p>
+          <p class="text-center text-muted mb-4">Generamos un código de prueba para <strong><?= e($usuarioPendiente['correo']) ?></strong>.</p>
 
           <?php if ($error): ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>
           <?php if ($success): ?><div class="alert alert-success"><?= e($success) ?></div><?php endif; ?>
