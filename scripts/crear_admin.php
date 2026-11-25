@@ -25,7 +25,7 @@ if (!$rol) {
     fwrite(STDERR, "No existe el rol administrador. Ejecuta primero database/compra_venta.sql.\n");
     exit(1);
 }
-$stmt = $pdo->prepare('INSERT INTO usuarios (id_rol, nombres, correo, password_hash) VALUES (?, ?, ?, ?)');
+$stmt = $pdo->prepare('INSERT INTO usuarios (id_rol, nombres, correo, password_hash, correo_verificado) VALUES (?, ?, ?, ?, 1)');
 try {
     $stmt->execute([$rol, $nombre, $correo, password_hash($password, PASSWORD_DEFAULT)]);
     echo "Administrador creado correctamente. Ya puedes iniciar sesión en login.php.\n";
