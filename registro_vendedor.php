@@ -45,13 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $tiendaStmt = $pdo->prepare('INSERT INTO tiendas (id_vendedor, id_categoria_principal, nombre_tienda, descripcion, pais, departamento, ciudad, direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
         $tiendaStmt->execute([$idVendedor, $categoria, $tienda, $descripcion, $pais, $departamento, $ciudad, $direccion]);
+        $codigo = crear_codigo_verificacion($pdo, $idVendedor);
         $pdo->commit();
 
-        $_SESSION['flash_success'] = 'Tu cuenta de vendedor fue creada. La tienda queda pendiente de verificación.';
-        // Evita reutilizar una sesión anterior (por ejemplo, la de un comprador).
         unset($_SESSION['usuario']);
         session_regenerate_id(true);
-        header('Location: login.php');
+        $_SESSION['pending_verification_user_id'] = $idVendedor;
+        $_SESSION['pending_verification_email'] = $correo;
+        $_SESSION['verification_test_code'] = $codigo;
+        header('Location: verificar_correo.php');
         exit;
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
