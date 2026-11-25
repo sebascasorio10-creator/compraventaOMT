@@ -8,6 +8,7 @@
 
 ## Estructura
 - `database/compra_venta.sql`: crea la base de datos y sus relaciones.
+- `database/migracion_verificacion_correo.sql`: agrega la verificación obligatoria de correo a las cuentas.
 - `config/database.php`: conexión PDO local. Si necesitas credenciales propias, crea `config/database.local.php` (está ignorado por Git).
 - `includes/bootstrap.php`: sesión, protección CSRF y escape de salida.
 - `registro_comprador.php` y `registro_vendedor.php`: formularios y guardado de cuentas.
@@ -53,12 +54,21 @@ Escribe el correo, nombre y una contraseña de al menos 10 caracteres cuando el 
 - `productos` 1:N `producto_imagenes`; favoritos y carrito usan tablas intermedias.
 - `pedidos` 1:N `pedido_detalles`.
 
+## Verificación de correo
+
+Después de tener creada la base de datos, ejecuta UNA SOLA VEZ `database/migracion_verificacion_correo.sql` desde MySQL Workbench. La migración marca como verificadas las cuentas que ya existían para no bloquearlas; los registros nuevos quedan pendientes hasta validar el código.
+
+En localhost, el código de seis dígitos se muestra en la pantalla de verificación porque todavía no hay un servidor SMTP configurado. Dura 10 minutos, admite cinco intentos y se puede regenerar después de 60 segundos. El código se guarda en la base de datos únicamente como hash.
+
+**Importante:** el modo de código visible solo funciona en `localhost` o `127.0.0.1`. Los registros públicos quedan bloqueados hasta configurar el envío real por SMTP. No publiques esta versión como sistema de registro listo para producción.
+
 ## Seguridad implementada
 - Contraseñas con `password_hash()` y verificación con `password_verify()`.
 - Consultas preparadas PDO y validación de correo/campos obligatorios.
 - Sesiones PHP con cookies HttpOnly y regeneración del ID al iniciar sesión.
 - Token CSRF en los formularios de registro y login.
 - El panel exige sesión y rol administrador.
+- Las cuentas comprador y vendedor nuevas deben verificar su correo antes de iniciar sesión.
 - No hay credenciales ni usuario administrador predeterminados en el repositorio.
 - Los documentos de identidad no se reciben ni almacenan todavía; la verificación de vendedores queda pendiente para una fase posterior.
 
