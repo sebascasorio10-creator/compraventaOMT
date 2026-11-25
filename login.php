@@ -11,13 +11,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     validar_csrf();
     $correo = strtolower(trim($_POST['correo'] ?? ''));
     $password = $_POST['password'] ?? '';
-    $stmt = $pdo->prepare('SELECT u.id_usuario, u.nombres, u.apellidos, u.correo, u.password_hash, u.estado, r.nombre AS rol FROM usuarios u INNER JOIN roles r ON r.id_rol = u.id_rol WHERE u.correo = ? LIMIT 1');
+    $stmt = $pdo->prepare('SELECT u.id_usuario, u.nombres, u.apellidos, u.correo, u.password_hash, u.estado, u.correo_verificado, r.nombre AS rol FROM usuarios u INNER JOIN roles r ON r.id_rol = u.id_rol WHERE u.correo = ? LIMIT 1');
     $stmt->execute([$correo]);
     $usuario = $stmt->fetch();
 
     if (!$usuario || !password_verify($password, $usuario['password_hash']) || $usuario['estado'] !== 'activo') {
         redirigir_con_error('Correo o contraseña incorrectos, o cuenta inactiva.', 'login.php');
     }
+
+    if ((int)$usuario['correo_verificado'] !== 1) {
+        unset($_SESSION['usuario']);
+        $_SESSION['pending_verification_user_id'] = (int)$usuario['id_usuario'];
+        $_SESSION['pending_verification_email'] = $usuario['correo'];
+        header('Location: verificar_correo.php');
+        exit;
+    }
+
     session_regenerate_id(true);
     $rolNormalizado = strtolower(trim((string)$usuario['rol']));
     $_SESSION['usuario'] = [
